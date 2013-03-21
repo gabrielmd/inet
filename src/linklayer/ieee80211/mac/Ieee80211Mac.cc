@@ -104,6 +104,7 @@ void Ieee80211Mac::initialize(int stage)
 {
     WirelessMacBase::initialize(stage);
 
+    //TODO: revise it: it's too big; should revise stages, too!!!
     if (stage == 0)
     {
         EV << "Initializing stage 0\n";

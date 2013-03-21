@@ -32,6 +32,7 @@ simsignal_t Ieee80211AgentSTA::dropConfirmSignal = SIMSIGNAL_NULL;
 
 void Ieee80211AgentSTA::initialize(int stage)
 {
+    //TODO should revise stages!
     if (stage==0)
     {
         // read parameters
@@ -51,6 +52,10 @@ void Ieee80211AgentSTA::initialize(int stage)
 
         InterfaceTable *ift = (InterfaceTable*)InterfaceTableAccess().getIfExists();
         myIface = NULL;
+
+        //FIXME if ift not found, then generate null pointer exception,
+        //      if ift found, then not used it.
+        //      myIface stay NULL always.
         if (!ift)
         {
             myIface = ift->getInterfaceByName(getParentModule()->getFullName());

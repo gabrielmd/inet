@@ -55,6 +55,8 @@ RoutingTableRecorder::~RoutingTableRecorder()
 
 void RoutingTableRecorder::initialize(int stage)
 {
+    //FIXME which stage should do I it?
+
     if (par("enabled").boolValue())
         hookListeners();
 }
