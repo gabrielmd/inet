@@ -293,6 +293,108 @@ networklayer/ipv4/RoutingTableRecorder:
         NB->subscribe       !!! MINDEN stage-ben lefut !!!
 
 networklayer/ipv6/RoutingTable6:
+    1:  NB->subscribe
+        IFT: configure
+    4: displaystring : (Routes added by configurator in stage 3)
+
+networklayer/ldp/LDP:
+    3:  IFT, RT, LIBTable, TED, 
+        socket.bind
+        NB->subscribe
+
+networklayer/manetrouting/aodv/aodv_uu_omnet:
+    4:  
+
+networklayer/manetrouting/batman/BatmanMain:
+    4:  
+
+networklayer/manetrouting/dsdv/DSDV_2:
+    4:  
+
+networklayer/manetrouting/dsr/DSRUU:
+    0:  local           !!!(persze nem 0, csak flag van, hogy 1szer fusson csak)
+    4:  IFT, RT
+        NB->subscribe
+
+networklayer/manetrouting/dymo/DYMOUM:
+    4:  
+
+networklayer/manetrouting/dymo_fau/DYMO:
+    4:  
+
+networklayer/manetrouting/olsr/OLSR_ETX:
+    4:  
+
+networklayer/manetrouting/olsr/OLSR:
+    4:  
+
+networklayer/mpls/LIBTable:
+    0:  local
+    4:  RT->getrouterID
+
+networklayer/mpls/MPLS:
+    3:  IFT, LIBTable, de igazából nem használja
+
+networklayer/ospfv2/OSPFRouting:
+    4:  RT, IFT, 
+        RT->getrouterID
+        addressresolver
+
+networklayer/rsvp_te/RSVP:
+    4:  RT, IFT, LIBTable, NB
+        RT->getrouterID
+networklayer/rsvp_te/SimpleClassifier:
+    4:  RT, LIBTable
+        RT->getrouterID
+        addressresolver
+
+networklayer/ted/LinkStateRouting:
+    4:  TED, RT, IFT, IE->getaddr
+        NB->subscribe
+
+networklayer/ted/TED:
+    4:  RT, IFT, NB
+        RT->getrouterID
+        addressresolver
+
+networklayer/xmipv6/BindingCache:
+    1:  WATCH  !!! miért pont stage1?
+
+networklayer/xmipv6/BindingUpdateList:
+    1:  WATCH  !!! miért pont stage1?
+
+networklayer/xmipv6/xMIPv6:
+    0:
+    1:
+    2:  RT6->set___()
+    3:
+
+world/httptools/HttpController:
+    0:
+    1:
+
+world/obstacles/ObstacleControl:
+    1:  AnnotationManager->createGroup()
+
+world/radio/ChannelAccess:
+    0:  hostModule->subscribe
+    [0-1]: receiving positionUpdate signal
+    2:  CC->set___()
+
+world/radio/IdealChannelModelAccess:
+    0:  hostModule->subscribe
+    [0-1]: receiving positionUpdate signal
+    2:  CC->set___()
+
+traci/TraCIScenarioManager:
+    1:
+
+traci/TraCIScenarioManagerLaunchd:
+    -->if(stage!=1) TraCIScenarioManager
+    1:
+
+
+
 
 itt tartok.
 
