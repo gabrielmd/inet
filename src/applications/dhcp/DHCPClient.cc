@@ -155,21 +155,21 @@ void DHCPClient::changeFSMState(CLIENT_STATE new_state)
 
         changeFSMState(SELECTING);
     }
-
+    else
     if (new_state == SELECTING)
     {
         // the selected lease is in lease
         sendDiscover();
         scheduleTimer_TO(WAIT_OFFER);
     }
-
+    else
     if (new_state == REQUESTING)
     {
         // the selected lease is in lease
         sendRequest();
         scheduleTimer_TO(WAIT_ACK);
     }
-
+    else
     if (new_state == BOUND)
     {
         cancelTimer_TO();
@@ -213,14 +213,14 @@ void DHCPClient::changeFSMState(CLIENT_STATE new_state)
         nb->fireChangeNotification(NF_INTERFACE_IPv4CONFIG_CHANGED, NULL);
         EV << "publishing the configuration change into the blackboard" << endl;
     }
-
+    else
     if (new_state == RENEWING)
     {
         // asking for lease renewal
         sendRequest();
         scheduleTimer_TO(WAIT_ACK);
     }
-
+    else
     if (new_state == REBINDING)
     {
         // asking for lease rebinding
@@ -231,7 +231,6 @@ void DHCPClient::changeFSMState(CLIENT_STATE new_state)
         sendRequest();
         scheduleTimer_TO(WAIT_ACK);
     }
-
 }
 
 void DHCPClient::handleMessage(cMessage *msg)
