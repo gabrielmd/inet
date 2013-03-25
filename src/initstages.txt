@@ -1,3 +1,15 @@
+stages:
+    - 0: LOCAL  (set local variables, read parameters, signal.subscribe)
+    - generate MAC address
+
+    - 0!: add interfaces to IF table
+
+    - 2: configure IPvX addresses       (for AddressConfigurator)
+
+    - add static routing entries
+
+    - add dynamic routing entries
+
 applications/dhcp/DHCPClient:
     0:  local
     3:  access: NB, RT, IFT, IE.MacAddress
@@ -32,13 +44,6 @@ applications/httptools/HttpBrowserBase:
 applications/httptools/HttpBrowserDirect:
     -->HttpBrowserBase
     *:  ???
-
-applications/pingapp/PingApp:
-    3:  local      !!! AddressResolver volt, de már ki lett rakva...
-
-applications/pingapp/PingTestApp:
-    3:  local
-        AddressResolver (kirakható)
 
 applications/rtpapp/RTPApplication:
     3:  local
@@ -113,6 +118,10 @@ battery/models/InetSimpleBattery:
 linklayer/common/WirelessMacBase:
     0:  local
         get NB pointer
+
+linklayer/ethernet/EtherMAC*:
+    0: local
+        IFT->addinterface()     !!!!
 
 linklayer/ext/ExtInterface:
     0:
@@ -203,6 +212,7 @@ linklayer/radio/Radio:
         emit
         displaystring
 
+----------------------------------------------------------------------------
 
 mobility/models/*Mobility:
     -->LineSegmentsMobilityBase | MovingMobilityBase | MobilityBase
@@ -235,6 +245,7 @@ mobility/models/TraCIMobility
     0:  local
     -->MobilityBase     !!! Miért a végén hívja a base::initialize(stage) függvényt? !!!
 
+----------------------------------------------------------------------------
 
 networklayer/arp/ARP:
     0:  local
