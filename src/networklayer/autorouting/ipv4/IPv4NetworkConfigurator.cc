@@ -37,7 +37,7 @@ inline bool isNotEmpty(const char *s) {return s && s[0];}
 
 static void printElapsedTime(const char *name, long startTime)
 {
-    EV_INFO << "Time spent in IPv4NetworkConfigurator::" << name << ": " << ((double)(clock() - startTime) / CLOCKS_PER_SEC) << "s" << endl;
+    EV_S << "Time spent in IPv4NetworkConfigurator::" << name << ": " << ((double)(clock() - startTime) / CLOCKS_PER_SEC) << "s" << endl;
 }
 
 IPv4NetworkConfigurator::InterfaceInfo::InterfaceInfo(Node *node, LinkInfo *linkInfo, InterfaceEntry *interfaceEntry)
