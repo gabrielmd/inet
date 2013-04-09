@@ -36,6 +36,8 @@
 #  define INET_API
 #endif
 
+#include "InitStages.h"
+
 typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long ulong;
