@@ -195,7 +195,8 @@ class INET_API EtherMACBase : public cSimpleModule, public cListener
 
   protected:
     //  initialization
-    virtual void initialize();
+    virtual void initialize(int stage);
+    virtual int numInitStages() const { return STAGE_LINK_LAYER+1; }
     virtual void initializeFlags();
     virtual void initializeMACAddress();
     virtual void initializeQueueModule();

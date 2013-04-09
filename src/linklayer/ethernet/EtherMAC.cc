@@ -57,10 +57,12 @@ EtherMAC::~EtherMAC()
     cancelAndDelete(endJammingMsg);
 }
 
-void EtherMAC::initialize()
+void EtherMAC::initialize(int stage)
 {
-    EtherMACBase::initialize();
+    EtherMACBase::initialize(stage);
 
+    if (stage == STAGE_LOCAL)
+    {
     endRxMsg = new cMessage("EndReception", ENDRECEPTION);
     endBackoffMsg = new cMessage("EndBackoff", ENDBACKOFF);
     endJammingMsg = new cMessage("EndJamming", ENDJAMMING);
@@ -72,6 +74,7 @@ void EtherMAC::initialize()
 
     WATCH(backoffs);
     WATCH(numConcurrentTransmissions);
+    }
 }
 
 void EtherMAC::initializeStatistics()

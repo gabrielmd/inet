@@ -33,7 +33,7 @@
  */
 class TraCITestApp : public cSimpleModule, protected cListener {
     public:
-        int numInitStages() const {return std::max(cSimpleModule::numInitStages(), 1);}
+        int numInitStages() const { return NUM_STAGES; }
         void initialize(int stage);
         void finish();
 

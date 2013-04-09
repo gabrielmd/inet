@@ -42,7 +42,7 @@ int TelnetApp::checkedScheduleAt(simtime_t t, cMessage *msg)
 void TelnetApp::initialize(int stage)
 {
     TCPGenericCliAppBase::initialize(stage);
-    if (stage != 3)
+    if (stage != STAGE_LOCAL)
         return;
 
 

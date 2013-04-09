@@ -46,14 +46,12 @@ DHCPClient::~DHCPClient()
 
 void DHCPClient::initialize(int stage)
 {
-    if (stage == 0)
+    if (stage == STAGE_LOCAL)
     {
         timer_t1 = NULL;
         timer_t2 = NULL;
         timer_to = NULL;
-    }
-    else if (stage == 3)
-    {
+
         numSent = 0;
         numReceived = 0;
         retry_count = 0;
@@ -71,7 +69,9 @@ void DHCPClient::initialize(int stage)
         // DHCP UDP ports
         bootpc_port = 68; // client
         bootps_port = 67; // server
-
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
         // get the hostname
         cModule* host = getContainingNode();
         host_name = host->getFullName();

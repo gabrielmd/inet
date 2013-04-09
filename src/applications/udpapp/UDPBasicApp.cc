@@ -33,9 +33,9 @@ void UDPBasicApp::initialize(int stage)
 {
     // because of IPvXAddressResolver, we need to wait until interfaces are registered,
     // address auto-assignment takes place etc.
-    if (stage != 3)
-        return;
 
+    if (stage == STAGE_LOCAL)
+    {
     counter = 0;
     numSent = 0;
     numReceived = 0;
@@ -46,7 +46,9 @@ void UDPBasicApp::initialize(int stage)
 
     localPort = par("localPort");
     destPort = par("destPort");
-
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
     const char *destAddrs = par("destAddresses");
     cStringTokenizer tokenizer(destAddrs);
     const char *token;
@@ -68,6 +70,7 @@ void UDPBasicApp::initialize(int stage)
 
     cMessage *timerMsg = new cMessage("sendTimer");
     scheduleAt(startTime, timerMsg);
+    }
 }
 
 void UDPBasicApp::finish()

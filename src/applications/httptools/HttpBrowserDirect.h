@@ -59,10 +59,6 @@ class INET_API HttpBrowserDirect : public HttpBrowserBase
         /** Handle incoming messages. See the parent class for details. */
         virtual void handleMessage(cMessage *msg);
 
-        /** Returns the number of initialization stages. Two required. */
-//      int numInitStages() const {return 2;}
-        //@}
-
     protected:
         /** @name Implementation of methods for sending requests to a server. See parent class for details. */
         //@{

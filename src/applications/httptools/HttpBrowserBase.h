@@ -151,7 +151,7 @@ class INET_API HttpBrowserBase : public HttpNodeBase
         virtual void handleMessage(cMessage *msg) = 0;
 
         /** Returns the number of initialization stages. Two required. */
-        int numInitStages() const {return 2;}
+        int numInitStages() const {return NUM_STAGES;}
         //@}
 
     protected:

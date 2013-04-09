@@ -56,7 +56,7 @@ HttpBrowserBase::~HttpBrowserBase()
 
 void HttpBrowserBase::initialize(int stage)
 {
-    if (stage==0)
+    if (stage==STAGE_LOCAL)
     {
         ll = par("logLevel");
 
@@ -156,7 +156,7 @@ void HttpBrowserBase::initialize(int stage)
 
         eventTimer = new cMessage("eventTimer");
     }
-    else if (stage==1)
+    else if (stage==STAGE_APPLICATION_LAYER)
     {
         EV_DEBUG << "Initializing base HTTP browser component -- phase 1\n";
 

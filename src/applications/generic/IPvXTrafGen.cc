@@ -31,41 +31,40 @@ simsignal_t IPvXTrafGen::sentPkSignal = SIMSIGNAL_NULL;
 
 void IPvXTrafGen::initialize(int stage)
 {
-    // because of IPvXAddressResolver, we need to wait until interfaces are registered,
-    // address auto-assignment takes place etc.
-    if (stage != 3)
-        return;
 
-    IPvXTrafSink::initialize();
-    sentPkSignal = registerSignal("sentPk");
-
-    protocol = par("protocol");
-    numPackets = par("numPackets");
-    simtime_t startTime = par("startTime");
-    stopTime = par("stopTime");
-    if (stopTime != 0 && stopTime <= startTime)
-        error("Invalid startTime/stopTime parameters");
-
-    const char *destAddrs = par("destAddresses");
-    cStringTokenizer tokenizer(destAddrs);
-    const char *token;
-    while ((token = tokenizer.nextToken()) != NULL)
-        destAddresses.push_back(IPvXAddressResolver().resolve(token));
-
-    packetLengthPar = &par("packetLength");
-
-    counter = 0;
-
-    numSent = 0;
-    WATCH(numSent);
-
-    if (destAddresses.empty())
-        return;
-
-    if (numPackets > 0)
+    if (stage == STAGE_LOCAL)
     {
-        cMessage *timer = new cMessage("sendTimer");
-        scheduleAt(startTime, timer);
+        IPvXTrafSink::initialize();
+        sentPkSignal = registerSignal("sentPk");
+        protocol = par("protocol");
+        numPackets = par("numPackets");
+        stopTime = par("stopTime");
+        packetLengthPar = &par("packetLength");
+
+        counter = 0;
+        numSent = 0;
+        WATCH(numSent);
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
+        simtime_t startTime = par("startTime");
+        if (stopTime != 0 && stopTime <= startTime)
+            error("Invalid startTime/stopTime parameters");
+
+        const char *destAddrs = par("destAddresses");
+        cStringTokenizer tokenizer(destAddrs);
+        const char *token;
+        while ((token = tokenizer.nextToken()) != NULL)
+            destAddresses.push_back(IPvXAddressResolver().resolve(token));
+
+        if (destAddresses.empty())
+            return;
+
+        if (numPackets > 0)
+        {
+            cMessage *timer = new cMessage("sendTimer");
+            scheduleAt(startTime, timer);
+        }
     }
 }
 

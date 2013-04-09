@@ -83,7 +83,7 @@ class INET_API BasicModule: public cSimpleModule, public INotifiable
      * should take place earliest in the second stage (stage==1),
      * when everyone interested in them has already subscribed.
      */
-    virtual int numInitStages() const {return 2;}
+    virtual int numInitStages() const { return STAGE_LOCAL+1; }
 
     /**
      * @brief Function to get the logging name of the host

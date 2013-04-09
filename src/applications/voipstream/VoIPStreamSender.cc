@@ -54,12 +54,11 @@ void VoIPStreamSender::Buffer::clear(int framesize)
 
 void VoIPStreamSender::initialize(int stage)
 {
-    if (stage != 3)  //wait until stage 3 - The Address resolver does not work before that!
-        return;
-
     // say HELLO to the world
-    ev << "VoIPSourceApp -> initialize(" << stage << ")" << endl;
+    ev << "VoIPStreamSender -> initialize(" << stage << ")" << endl;
 
+    if (stage == STAGE_APPLICATION_LAYER)
+    {
     // Hack for create results folder
     recordScalar("hackForCreateResultsFolder", 0);
 
@@ -109,6 +108,7 @@ void VoIPStreamSender::initialize(int stage)
 
     // statistics:
     sentPkSignal = registerSignal("sentPk");
+    }
 }
 
 void VoIPStreamSender::handleMessage(cMessage *msg)

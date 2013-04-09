@@ -27,20 +27,20 @@ simsignal_t UDPSink::rcvdPkSignal = SIMSIGNAL_NULL;
 
 void UDPSink::initialize(int stage)
 {
-    if (stage == 0)
+    if (stage == STAGE_LOCAL)
     {
         numReceived = 0;
         WATCH(numReceived);
         rcvdPkSignal = registerSignal("rcvdPk");
 
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
+        socket.joinLocalMulticastGroups();
         socket.setOutputGate(gate("udpOut"));
 
         int localPort = par("localPort");
         socket.bind(localPort);
-    }
-    else if (stage == 3)
-    {
-        socket.joinLocalMulticastGroups();
     }
 }
 

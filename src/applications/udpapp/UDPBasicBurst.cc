@@ -60,9 +60,8 @@ void UDPBasicBurst::initialize(int stage)
 {
     // because of IPvXAddressResolver, we need to wait until interfaces are registered,
     // address auto-assignment takes place etc.
-    if (stage != 3)
-        return;
-
+    if (stage == STAGE_LOCAL)
+    {
     counter = 0;
     numSent = 0;
     numReceived = 0;
@@ -96,6 +95,13 @@ void UDPBasicBurst::initialize(int stage)
     localPort = par("localPort");
     destPort = par("destPort");
 
+    sentPkSignal = registerSignal("sentPk");
+    rcvdPkSignal = registerSignal("rcvdPk");
+    outOfOrderPkSignal = registerSignal("outOfOrderPk");
+    dropPkSignal = registerSignal("dropPk");
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
     socket.setOutputGate(gate("udpOut"));
     socket.bind(localPort);
 
@@ -126,13 +132,9 @@ void UDPBasicBurst::initialize(int stage)
         activeBurst = true;
 
         timerNext = new cMessage("UDPBasicBurstTimer");
-        scheduleAt(startTime, timerNext);
+        scheduleAt(nextBurst, timerNext);
     }
-
-    sentPkSignal = registerSignal("sentPk");
-    rcvdPkSignal = registerSignal("rcvdPk");
-    outOfOrderPkSignal = registerSignal("outOfOrderPk");
-    dropPkSignal = registerSignal("dropPk");
+    }
 }
 
 IPvXAddress UDPBasicBurst::chooseDestAddr()

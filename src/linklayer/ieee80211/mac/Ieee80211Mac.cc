@@ -105,7 +105,7 @@ void Ieee80211Mac::initialize(int stage)
     WirelessMacBase::initialize(stage);
 
     //TODO: revise it: it's too big; should revise stages, too!!!
-    if (stage == 0)
+    if (stage == STAGE_LOCAL)
     {
         EV << "Initializing stage 0\n";
         int numQueues = 1;
@@ -253,7 +253,10 @@ void Ieee80211Mac::initialize(int stage)
         configureAutoBitRate();
         //end auto rate code
         EV<<" bitrate="<<bitrate/1e6<<"M IDLE="<<IDLE<<" RECEIVE="<<RECEIVE<<endl;
-
+    }
+    else if (stage == STAGE_PHYSICAL_LAYER)
+    {
+        //TODO a MACAddress generalas es a registerInterface egy stage-ben kell legyen
         const char *addressString = par("address");
         address = isInterfaceRegistered();
         if (address.isUnspecified())
@@ -284,7 +287,9 @@ void Ieee80211Mac::initialize(int stage)
         endTimeout = new cMessage("Timeout");
         endReserve = new cMessage("Reserve");
         mediumStateChange = new cMessage("MediumStateChange");
-
+    }
+    else if (stage == STAGE_LINK_LAYER)
+    {
         // interface
         if (isInterfaceRegistered().isUnspecified())
             registerInterface();

@@ -59,7 +59,7 @@ class INET_API DHCPServer : public cSimpleModule
     protected:
         virtual int numInitStages() const
         {
-            return 4;
+            return NUM_STAGES;
         }
         virtual void initialize(int stage);
         virtual void handleMessage(cMessage *msg);

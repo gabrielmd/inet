@@ -16,8 +16,8 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef VOIPSENDER_H_
-#define VOIPSENDER_H_
+#ifndef __INET_SIMPLEVOIPSENDER_H
+#define __INET_SIMPLEVOIPSENDER_H
 
 #include <string.h>
 #include "INETDefs.h"
@@ -64,10 +64,10 @@ class SimpleVoIPSender : public cSimpleModule
     SimpleVoIPSender();
 
   protected:
-    virtual int numInitStages() const {return 4;}
+    virtual int numInitStages() const { return NUM_STAGES; }
     void initialize(int stage);
     void handleMessage(cMessage *msg);
 };
 
-#endif /* VOIPSENDER_H_ */
+#endif // __INET_SIMPLEVOIPSENDER_H
 

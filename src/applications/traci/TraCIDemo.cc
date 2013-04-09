@@ -27,14 +27,14 @@ Define_Module(TraCIDemo);
 
 void TraCIDemo::initialize(int stage) {
     cSimpleModule::initialize(stage);
-    if (stage == 3) {
+    if (stage == STAGE_LOCAL) {
         debug = par("debug");
-
+        sentMessage = false;
+    }
+    else if (stage == STAGE_APPLICATION_LAYER) {
         mobilityStateChangedSignal = registerSignal("mobilityStateChanged");
         traci = TraCIMobilityAccess().get();
         traci->subscribe(mobilityStateChangedSignal, this);
-
-        sentMessage = false;
 
         setupLowerLayer();
     }

@@ -64,7 +64,7 @@ class ExtInterface : public cSimpleModule
   public:
    // Module_Class_Members(ExtInterface, cSimpleModule, 0);
 
-    virtual int numInitStages() const {return 4;}
+    virtual int numInitStages() const { return NUM_STAGES; }
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage *msg);
 

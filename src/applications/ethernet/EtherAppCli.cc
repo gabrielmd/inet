@@ -41,9 +41,7 @@ EtherAppCli::~EtherAppCli()
 
 void EtherAppCli::initialize(int stage)
 {
-    // we can only initialize in the 2nd stage (stage==1), because
-    // assignment of "auto" MAC addresses takes place in stage 0
-    if (stage == 1)
+    if (stage == STAGE_LOCAL)
     {
         reqLength = &par("reqLength");
         respLength = &par("respLength");
@@ -61,7 +59,9 @@ void EtherAppCli::initialize(int stage)
         rcvdPkSignal = registerSignal("rcvdPk");
         WATCH(packetsSent);
         WATCH(packetsReceived);
-
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
         destMACAddress = resolveDestMACAddress();
 
         // if no dest address given, nothing to do

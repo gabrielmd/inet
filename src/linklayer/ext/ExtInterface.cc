@@ -40,7 +40,14 @@ Define_Module(ExtInterface);
 void ExtInterface::initialize(int stage)
 {
     // subscribe at scheduler for external messages
-    if (stage == 0)
+    if (stage == STAGE_LOCAL)
+    {
+        numSent = numRcvd = numDropped = 0;
+        WATCH(numSent);
+        WATCH(numRcvd);
+        WATCH(numDropped);
+    }
+    else if (stage == STAGE_LINK_LAYER)
     {
         if (dynamic_cast<cSocketRTScheduler *>(simulation.getScheduler()) != NULL)
         {
@@ -57,11 +64,6 @@ void ExtInterface::initialize(int stage)
             // this simulation run works without external interface..
             connected = false;
         }
-        numSent = numRcvd = numDropped = 0;
-        WATCH(numSent);
-        WATCH(numRcvd);
-        WATCH(numDropped);
-
         // register our interface entry in RoutingTable
         interfaceEntry = registerInterface();
 
@@ -72,7 +74,7 @@ void ExtInterface::initialize(int stage)
             getDisplayString().setTagArg("i", 2, "100");
         }
     }
-    else if (stage == 3)
+    else if (stage == STAGE_LAST)
     {
         // update display string when addresses have been autoconfigured etc.
         if (ev.isGUI())
@@ -87,7 +89,7 @@ InterfaceEntry *ExtInterface::registerInterface()
     // interface name: our module name without special characters ([])
     e->setName(OPP_Global::stripnonalnum(getFullName()).c_str());
 
-    e->setMtu(par("mtu"));
+    e->setMtu(par("mtu").longValue());
     e->setMulticast(true);
     e->setPointToPoint(true);
     IInterfaceTable *ift = InterfaceTableAccess().get();

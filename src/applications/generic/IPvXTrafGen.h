@@ -50,7 +50,7 @@ class INET_API IPvXTrafGen : public IPvXTrafSink
     virtual IPvXAddress chooseDestAddr();
     virtual void sendPacket();
 
-    virtual int numInitStages() const {return 4;}
+    virtual int numInitStages() const { return NUM_STAGES; }
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage *msg);
 };

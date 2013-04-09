@@ -54,7 +54,7 @@ class INET_API EtherTrafGen : public cSimpleModule
 
   protected:
     virtual void initialize(int stage);
-    virtual int numInitStages() const {return 2;}
+    virtual int numInitStages() const {return NUM_STAGES;}
     virtual void handleMessage(cMessage *msg);
     virtual void finish();
 

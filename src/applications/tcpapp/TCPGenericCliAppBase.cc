@@ -25,9 +25,9 @@ simsignal_t TCPGenericCliAppBase::sentPkSignal = SIMSIGNAL_NULL;
 void TCPGenericCliAppBase::initialize(int stage)
 {
     cSimpleModule::initialize(stage);
-    if (stage != 3)
-        return;
 
+    if (stage == STAGE_LOCAL)
+    {
     numSessions = numBroken = packetsSent = packetsRcvd = bytesSent = bytesRcvd = 0;
 
     //statistics
@@ -41,7 +41,9 @@ void TCPGenericCliAppBase::initialize(int stage)
     WATCH(packetsRcvd);
     WATCH(bytesSent);
     WATCH(bytesRcvd);
-
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
     // parameters
     const char *localAddress = par("localAddress");
     int localPort = par("localPort");
@@ -50,8 +52,11 @@ void TCPGenericCliAppBase::initialize(int stage)
 
     socket.setCallbackObject(this);
     socket.setOutputGate(gate("tcpOut"));
-
+    }
+    else if (stage == STAGE_LAST)
+    {
     setStatusString("waiting");
+    }
 }
 
 void TCPGenericCliAppBase::handleMessage(cMessage *msg)

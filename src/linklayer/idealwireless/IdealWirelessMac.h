@@ -84,7 +84,7 @@ class INET_API IdealWirelessMac : public WirelessMacBase, public cListener
     virtual ~IdealWirelessMac();
 
   protected:
-    virtual int numInitStages() const {return 1;}
+    virtual int numInitStages() const { return NUM_STAGES; }
     virtual void initialize(int stage);
 };
 

@@ -33,7 +33,7 @@ void BasicBattery::initialize(int aStage)
 {
     cSimpleModule::initialize(aStage); //DO NOT DELETE!!
 
-    if (0 == aStage)
+    if (STAGE_LOCAL == aStage)
     {
         mpNb = NotificationBoardAccess().get();
     }
@@ -41,7 +41,6 @@ void BasicBattery::initialize(int aStage)
 
 void BasicBattery::finish()
 {
-
 }
 
 

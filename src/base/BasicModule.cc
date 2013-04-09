@@ -35,9 +35,8 @@ void BasicModule::initialize(int stage)
 {
     cModule *host = findHost(false);
 
-    if (stage == 0)
+    if (stage == STAGE_LOCAL)
     {
-
         if (hasPar("coreDebug"))
             coreDebug = par("coreDebug").boolValue();
         else

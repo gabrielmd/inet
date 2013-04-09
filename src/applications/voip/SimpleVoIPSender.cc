@@ -40,9 +40,8 @@ void SimpleVoIPSender::initialize(int stage)
     EV << "VoIP Sender initialize: stage " << stage << endl;
 
     // avoid multiple initializations
-    if (stage != 3)
-        return;
-
+    if (stage == STAGE_LOCAL)
+    {
     talkspurtDuration = 0;
     silenceDuration = 0;
     selfSource = new cMessage("selfSource");
@@ -56,14 +55,14 @@ void SimpleVoIPSender::initialize(int stage)
     selfSender = new cMessage("selfSender");
     localPort = par("localPort");
     destPort = par("destPort");
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
     destAddress = IPvXAddressResolver().resolve(par("destAddress").stringValue());
-
-
     socket.setOutputGate(gate("udpOut"));
     socket.bind(localPort);
 
     EV << "VoIPSender::initialize - binding to port: local:" << localPort << " , dest:" << destPort << endl;
-
 
     // calculating traffic starting time
     simtime_t startTime = par("startTime").doubleValue();
@@ -73,6 +72,7 @@ void SimpleVoIPSender::initialize(int stage)
 
     scheduleAt(startTime, selfSource);
     EV << "\t starting traffic in " << startTime << " s" << endl;
+    }
 }
 
 void SimpleVoIPSender::handleMessage(cMessage *msg)

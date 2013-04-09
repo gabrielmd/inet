@@ -60,9 +60,8 @@ SimpleVoIPReceiver::~SimpleVoIPReceiver()
 
 void SimpleVoIPReceiver::initialize(int stage)
 {
-    if (stage != 3)
-        return;
-
+    if (stage == STAGE_LOCAL)
+    {
     emodel_Ie = par("emodel_Ie");
     emodel_Bpl = par("emodel_Bpl");
     emodel_A = par("emodel_A");
@@ -72,6 +71,15 @@ void SimpleVoIPReceiver::initialize(int stage)
     playoutDelay = par("playoutDelay");
     mosSpareTime = par("mosSpareTime");
 
+    packetLossRateSignal = registerSignal("VoIPPacketLossRate");
+    packetDelaySignal = registerSignal("VoIPPacketDelay");
+    playoutDelaySignal = registerSignal("VoIPPlayoutDelay");
+    playoutLossRateSignal = registerSignal("VoIPPlayoutLossRate");
+    mosSignal = registerSignal("VoIPMosSignal");
+    taildropLossRateSignal = registerSignal("VoIPTaildropLossRate");
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
+    {
     int port = par("localPort");
     EV << "VoIPReceiver::initialize - binding to port: local:" << port << endl;
     if (port != -1) {
@@ -81,13 +89,7 @@ void SimpleVoIPReceiver::initialize(int stage)
 
     currentTalkspurt.talkspurtID = -1;
     selfTalkspurtFinished = new cMessage("selfTalkspurtFinished");
-
-    packetLossRateSignal = registerSignal("VoIPPacketLossRate");
-    packetDelaySignal = registerSignal("VoIPPacketDelay");
-    playoutDelaySignal = registerSignal("VoIPPlayoutDelay");
-    playoutLossRateSignal = registerSignal("VoIPPlayoutLossRate");
-    mosSignal = registerSignal("VoIPMosSignal");
-    taildropLossRateSignal = registerSignal("VoIPTaildropLossRate");
+    }
 }
 
 void SimpleVoIPReceiver::startTalkspurt(SimpleVoIPPacket* packet)

@@ -61,11 +61,14 @@ InterfaceTable::~InterfaceTable()
 
 void InterfaceTable::initialize(int stage)
 {
-    if (stage==0)
+    if (stage == STAGE_LOCAL)
     {
         // get a pointer to the NotificationBoard module
         nb = NotificationBoardAccess().get();
-
+    }
+    else if (stage == STAGE_LINK_LAYER-1)
+    {
+        //TODO should be first on STAGE_LINK_LAYER
         // register a loopback interface
         InterfaceEntry *ie = new InterfaceEntry(NULL);
         ie->setName("lo0");
@@ -73,7 +76,7 @@ void InterfaceTable::initialize(int stage)
         ie->setLoopback(true);
         addInterface(ie);
     }
-    else if (stage==1)
+    else if (stage == STAGE_LAST)
     {
         WATCH_PTRVECTOR(idToInterface);
         updateDisplayString();

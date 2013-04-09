@@ -33,7 +33,7 @@ void InetSimpleBattery::initialize(int stage)
 {
 
     BasicBattery::initialize(stage); //DO NOT DELETE!!
-    if (stage == 0)
+    if (stage == STAGE_LOCAL)
     {
         voltage = par("voltage");
         nominalCapmAh = par("nominal");

@@ -38,7 +38,7 @@ TCPBasicClientApp::~TCPBasicClientApp()
 void TCPBasicClientApp::initialize(int stage)
 {
     TCPGenericCliAppBase::initialize(stage);
-    if (stage != 3)
+    if (stage != STAGE_LOCAL)
         return;
 
     numRequestsToSend = 0;

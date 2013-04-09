@@ -26,24 +26,25 @@ simsignal_t UDPEchoApp::pkSignal = SIMSIGNAL_NULL;
 
 void UDPEchoApp::initialize(int stage)
 {
-    if (stage == 0)
+    if (stage == STAGE_LOCAL)
+    {
+        // init statistics
+        pkSignal = registerSignal("pk");
+        numEchoed = 0;
+        WATCH(numEchoed);
+    }
+    else if (stage == STAGE_APPLICATION_LAYER)
     {
         // set up UDP socket
         socket.setOutputGate(gate("udpOut"));
         int localPort = par("localPort");
         socket.bind(localPort);
-
-        // init statistics
-        pkSignal = registerSignal("pk");
-        numEchoed = 0;
-        WATCH(numEchoed);
-
+        socket.joinLocalMulticastGroups();
+    }
+    else if (stage == STAGE_LAST)
+    {
         if (ev.isGUI())
             updateDisplay();
-    }
-    else if (stage == 3)
-    {
-        socket.joinLocalMulticastGroups();
     }
 }
 

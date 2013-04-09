@@ -32,7 +32,7 @@ simsignal_t WirelessMacBase::packetReceivedFromUpperSignal = SIMSIGNAL_NULL;
 
 void WirelessMacBase::initialize(int stage)
 {
-    if (stage==0)
+    if (stage==STAGE_LOCAL)
     {
         upperLayerIn = findGate("upperLayerIn");
         upperLayerOut = findGate("upperLayerOut");

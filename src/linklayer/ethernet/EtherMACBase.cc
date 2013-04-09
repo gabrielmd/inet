@@ -158,21 +158,26 @@ EtherMACBase::~EtherMACBase()
     cancelAndDelete(endPauseMsg);
 }
 
-void EtherMACBase::initialize()
+void EtherMACBase::initialize(int stage)
 {
+    if (stage == STAGE_LOCAL)
+    {
     physInGate = gate("phys$i");
     physOutGate = gate("phys$o");
     upperLayerInGate = gate("upperLayerIn");
     transmissionChannel = NULL;
     interfaceEntry = NULL;
     curTxFrame = NULL;
-
+    initializeStatistics();
+    }
+    else if (stage == STAGE_PHYSICAL_LAYER)
+    {
     initializeFlags();
-
     initializeMACAddress();
     initializeQueueModule();
-    initializeStatistics();
-
+    }
+    else if (stage == STAGE_LINK_LAYER)
+    {
     registerInterface(); // needs MAC address
 
     readChannelParameters(true);
@@ -195,6 +200,7 @@ void EtherMACBase::initialize()
     WATCH(pauseUnitsRequested);
 
     subscribe(POST_MODEL_CHANGE, this);
+    }
 }
 
 void EtherMACBase::initializeQueueModule()

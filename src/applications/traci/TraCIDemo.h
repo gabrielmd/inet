@@ -32,7 +32,7 @@
 class TraCIDemo : public cSimpleModule, protected cListener {
     public:
         virtual int numInitStages() const {
-            return std::max(4, cSimpleModule::numInitStages());
+            return NUM_STAGES;
         }
         virtual void initialize(int);
         virtual void receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj);

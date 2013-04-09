@@ -16,8 +16,8 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef VOIPRECEIVER_H_
-#define VOIPRECEIVER_H_
+#ifndef __INET_SIMPLEVOIPRECEIVER_H
+#define __INET_SIMPLEVOIPRECEIVER_H
 
 #include <string.h>
 #include <list>
@@ -97,11 +97,12 @@ class SimpleVoIPReceiver : public cSimpleModule
     ~SimpleVoIPReceiver();
 
   protected:
-    virtual int numInitStages() const {return 4;}
+    virtual int numInitStages() const { return NUM_STAGES; }
     void initialize(int stage);
     void handleMessage(cMessage *msg);
     virtual void finish();
 };
 
 
-#endif /* VOIPRECEIVER_H_ */
+#endif // __INET_SIMPLEVOIPRECEIVER_H
+

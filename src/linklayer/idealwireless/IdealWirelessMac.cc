@@ -51,7 +51,7 @@ void IdealWirelessMac::initialize(int stage)
     WirelessMacBase::initialize(stage);
 
     // all initialization is done in the first stage
-    if (stage == 0)
+    if (stage == STAGE_LOCAL)
     {
         outStandingRequests = 0;
         lastTransmitStartTime = -1.0;
@@ -63,7 +63,13 @@ void IdealWirelessMac::initialize(int stage)
         interfaceEntry = NULL;
         radioStateSignal = registerSignal("radioState");
         dropPkNotForUsSignal = registerSignal("dropPkNotForUs");
-
+    }
+    else if (stage == STAGE_PHYSICAL_LAYER)
+    {
+        initializeMACAddress();
+    }
+    else if (stage == STAGE_LINK_LAYER)
+    {
         radioModule = gate("lowerLayerOut")->getPathEndGate()->getOwnerModule();
         IdealRadio *irm = check_and_cast<IdealRadio *>(radioModule);
         irm->subscribe(radioStateSignal, this);
@@ -73,8 +79,6 @@ void IdealWirelessMac::initialize(int stage)
         queueModule = dynamic_cast<IPassiveQueue *>(queueOut->getOwnerModule());
         if (!queueModule)
             error("Missing queueModule");
-
-        initializeMACAddress();
 
         // register our interface entry in IInterfaceTable
         interfaceEntry = registerInterface(bitrate);

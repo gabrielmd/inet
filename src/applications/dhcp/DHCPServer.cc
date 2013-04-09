@@ -39,7 +39,7 @@ DHCPServer::~DHCPServer()
 
 void DHCPServer::initialize(int stage)
 {
-    if (stage == 1)
+    if (stage == STAGE_LOCAL)
     {
         numSent = 0;
         numReceived = 0;
@@ -53,14 +53,11 @@ void DHCPServer::initialize(int stage)
 
         // process delay
         proc_delay = 0.001; // 100ms
-
-        IInterfaceTable* ift = InterfaceTableAccess().get();
-
-        ie = ift->getInterfaceByName(par("interface"));
     }
-
-    if (stage == 2)
+    else if (stage == STAGE_APPLICATION_LAYER)
     {
+        IInterfaceTable* ift = InterfaceTableAccess().get();
+        ie = ift->getInterfaceByName(par("interface"));
         if (ie != NULL)
         {
             // bind the client to the udp port

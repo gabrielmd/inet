@@ -28,7 +28,7 @@ void RTPApplication::initialize(int stage)
 {
     // because of IPvXAddressResolver, we need to wait until interfaces are registered,
     // address auto-assignment takes place etc.
-    if (stage != 3)
+    if (stage != STAGE_APPLICATION_LAYER)
         return;
 
     // read all omnet parameters

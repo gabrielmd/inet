@@ -38,7 +38,7 @@ class INET_API UDPSink : public cSimpleModule
     virtual void processPacket(cPacket *msg);
 
   protected:
-    virtual int numInitStages() const {return 4;}
+    virtual int numInitStages() const { return NUM_STAGES; }
     virtual void initialize(int stage);
     virtual void handleMessage(cMessage *msg);
     virtual void finish();

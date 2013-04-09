@@ -63,12 +63,13 @@ applications/tcpapp/TelnetApp:
 
 applications/traci/TraCIDemo:
     3:  local
-        otherModule->subscribe()
+        otherModule->subscribe() MOBILITY
         udpsocket.bind()
 
 applications/traci/TraCITestApp:
     0:  local
-        otherModule->subscribe()
+        otherModule->subscribe() MOBILITY
+
 
 applications/udpapp/UDPBasicApp:
     3:  local
@@ -88,6 +89,7 @@ applications/udpapp/UDPSink:
     0:  local
         socket.bind
     3:  socket.joinLocalMulticastGroups()   (IFT)
+
 
 applications/voip/SimpleVoIPReceiver:
     3:  local
