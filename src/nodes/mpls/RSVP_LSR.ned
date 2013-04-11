@@ -11,17 +11,18 @@
 //
 package inet.nodes.mpls;
 
-import inet.nodes.inet.NetworkLayer;
-import inet.networklayer.ted.TED;
-import inet.networklayer.ted.LinkStateRouting;
-import inet.networklayer.rsvp_te.SimpleClassifier;
-import inet.networklayer.rsvp_te.RSVP;
-import inet.networklayer.mpls.MPLS;
-import inet.networklayer.mpls.LIBTable;
-import inet.networklayer.ipv4.RoutingTable;
-import inet.networklayer.common.InterfaceTable;
-import inet.linklayer.IWiredNic;
 import inet.base.NotificationBoard;
+import inet.linklayer.IWiredNic;
+import inet.linklayer.loopback.LoopbackInterface;
+import inet.networklayer.common.InterfaceTable;
+import inet.networklayer.ipv4.RoutingTable;
+import inet.networklayer.mpls.LIBTable;
+import inet.networklayer.mpls.MPLS;
+import inet.networklayer.rsvp_te.RSVP;
+import inet.networklayer.rsvp_te.SimpleClassifier;
+import inet.networklayer.ted.LinkStateRouting;
+import inet.networklayer.ted.TED;
+import inet.nodes.inet.NetworkLayer;
 
 
 //
@@ -95,6 +96,9 @@ module RSVP_LSR extends RSVP_ROUTER_BASE
         libTable: LIBTable {
             parameters:
                 @display("p=312,268");
+        }
+        lo0: LoopbackInterface {
+            @display("p=100,270");
         }
     connections allowunconnected:
         linkStateRouting.ipOut --> networkLayer.ospfIn;
