@@ -76,8 +76,8 @@ module RSVP_LSR extends RSVP_ROUTER_BASE
             parameters:
                 @display("p=192,195");
             gates:
-                ifIn[sizeof(pppg)];
-                ifOut[sizeof(pppg)];
+                ifIn[sizeof(pppg)+1];
+                ifOut[sizeof(pppg)+1];
         }
         ppp[sizeof(pppg)]: <default("PPPInterface")> like IWiredNic {
             parameters:
@@ -116,5 +116,7 @@ module RSVP_LSR extends RSVP_ROUTER_BASE
             mpls.netwOut[i] --> networkLayer.ifIn[i];
             mpls.netwIn[i] <-- networkLayer.ifOut[i];
         }
+        networkLayer.ifOut[sizeof(pppg)] --> lo0.upperLayerIn;
+        lo0.upperLayerOut --> networkLayer.ifIn[sizeof(pppg)];
 }
 

@@ -347,7 +347,7 @@ void IPv4::handleMessageFromHL(cPacket *msg)
 
             destIE = ift->getFirstLoopbackInterface();
             ASSERT(destIE);
-            fragmentAndSend(datagram, destIE, destAddr);
+            routeUnicastPacket(datagram, destIE, destAddr);
         }
         else if (destAddr.isLimitedBroadcastAddress() || rt->isLocalBroadcastAddress(destAddr))
             routeLocalBroadcastPacket(datagram, destIE);
@@ -675,13 +675,6 @@ void IPv4::fragmentAndSend(IPv4Datagram *datagram, InterfaceEntry *ie, IPv4Addre
         return;
     }
 
-    // optimization: do not fragment and reassemble on the loopback interface
-    if (ie->isLoopback())
-    {
-        sendDatagramToOutput(datagram, ie, nextHopAddr);
-        return;
-    }
-
     // FIXME some IP options should not be copied into each fragment, check their COPY bit
     int headerLength = datagram->getHeaderLength();
     int payloadLength = datagram->getByteLength() - headerLength;
@@ -775,13 +768,6 @@ IPv4Datagram *IPv4::createIPv4Datagram(const char *name)
 
 void IPv4::sendDatagramToOutput(IPv4Datagram *datagram, InterfaceEntry *ie, IPv4Address nextHopAddr)
 {
-    if (ie->isLoopback())
-    {
-        // no interface module for loopback, forward packet internally
-        // FIXME shouldn't be arrival(datagram) ?
-        handlePacketFromNetwork(datagram, ie);
-    }
-    else
     {
         // send out datagram to ARP, with control info attached
         delete datagram->removeControlInfo();

@@ -65,13 +65,6 @@ void InterfaceTable::initialize(int stage)
     {
         // get a pointer to the NotificationBoard module
         nb = NotificationBoardAccess().get();
-
-        // register a loopback interface
-        InterfaceEntry *ie = new InterfaceEntry(NULL);
-        ie->setName("lo0");
-        ie->setMtu(3924);
-        ie->setLoopback(true);
-        addInterface(ie);
     }
     else if (stage==1)
     {

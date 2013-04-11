@@ -145,6 +145,7 @@ void RoutingTable::configureRouterId()
         if (getInterfaceByAddress(routerId)==NULL)
         {
             InterfaceEntry *lo0 = ift->getFirstLoopbackInterface();
+            ASSERT(lo0);
             lo0->ipv4Data()->setIPAddress(routerId);
             lo0->ipv4Data()->setNetmask(IPv4Address::ALLONES_ADDRESS);
         }
@@ -362,7 +363,8 @@ InterfaceEntry *RoutingTable::getInterfaceByAddress(const IPv4Address& addr) con
 void RoutingTable::configureLoopbackForIPv4()
 {
     InterfaceEntry *ie = ift->getFirstLoopbackInterface();
-
+    if (!ie)
+        return;
     // add IPv4 info. Set 127.0.0.1/8 as address by default --
     // we may reconfigure later it to be the routerId
     IPv4InterfaceData *d = new IPv4InterfaceData();
