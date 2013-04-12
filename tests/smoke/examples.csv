@@ -97,6 +97,7 @@
 /examples/inet/hierarchical99/,      -f omnetpp.ini -c General -r 0
 /examples/inet/ipv4largenet/,        -f omnetpp.ini -c IPv4LargeNet -r 0
 /examples/inet/kidsnw1/,             -f omnetpp.ini -c General -r 0
+/examples/inet/localudp/,            -f omnetpp.ini -c General -r 0
 /examples/inet/multicast/,           -f omnetpp.ini -c General -r 0
 /examples/inet/nclients/,            -f basicHTTP.ini -c General -r 0
 /examples/inet/nclients/,            -f filetransfer.ini -c General -r 0

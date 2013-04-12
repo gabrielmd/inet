@@ -84,6 +84,8 @@
 
 /examples/inet/kidsnw1/,             -f omnetpp.ini -c General -r 0,                1000s,           6cb8-a854
 
+/examples/inet/localudp/,            -f omnetpp.ini -c General -r 0,                1100s,           31aa-4220
+
 /examples/inet/multicast/,           -f omnetpp.ini -c General -r 0,                2000s,           04ae-3aa6
 
 /examples/inet/nclients/,            -f basicHTTP.ini -c General -r 0,              500000s,         0efe-edb8
