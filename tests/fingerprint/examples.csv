@@ -1,5 +1,5 @@
 # workingdir,                        args,                                          simtimelimit,    fingerprint
-/examples/adhoc/hostautoconf/,       -f omnetpp.ini -c General -r 0,                100s,            2d84-69f3
+/examples/adhoc/hostautoconf/,       -f omnetpp.ini -c General -r 0,                100s,            ae14-6d22
 /examples/adhoc/idealwireless/,      -f omnetpp.ini -c Ping1 -r 0,                  100s,            a216-a911
 #/examples/adhoc/idealwireless/,      -f omnetpp.ini -c Ping2 -r 0,                   100s,          0    # interactive config, needed a *.numHosts parameter
 /examples/adhoc/ieee80211/,          -f fingerprints.ini -c Ping1 -r 0,             1000s,           ebc3-222f
@@ -72,19 +72,19 @@
 /examples/inet/flatnet/,             -f fingerprints.ini -c General -r 0,           200s,            26a2-3e21
 /examples/inet/flatnet/,             -f omnetpp.ini -c General -r 0,                200s,            26a2-3e21
 
-/examples/inet/hierarchical/,        -f omnetpp.ini -c Hosts1 -r 0,                 10000s,          6aca-4079
-/examples/inet/hierarchical/,        -f omnetpp.ini -c Hosts16 -r 0,                10000s,          2d6c-452a
+/examples/inet/hierarchical/,        -f omnetpp.ini -c Hosts1 -r 0,                 10000s,          65f7-36d6
+/examples/inet/hierarchical/,        -f omnetpp.ini -c Hosts16 -r 0,                10000s,          991c-3567
 /examples/inet/hierarchical/,        -f omnetpp.ini -c Hosts256 -r 0,               20s,             89ee-eff9
 /examples/inet/hierarchical/,        -f omnetpp.ini -c Hosts1280 -r 0,              1s,              3cc9-cb64
 
 # /examples/inet/hierarchical/,        -f omnetpp.ini -c Hosts9000 -r 0,              1s,              0    # cpu time limit exceeded during 0s simtime
 
-/examples/inet/hierarchical99/,      -f omnetpp.ini -c General -r 0,                10000s,          afd4-213e
+/examples/inet/hierarchical99/,      -f omnetpp.ini -c General -r 0,                10000s,          7248-6495
 /examples/inet/ipv4largenet/,        -f omnetpp.ini -c IPv4LargeNet -r 0,           20s,             31ec-1727
 
-/examples/inet/kidsnw1/,             -f omnetpp.ini -c General -r 0,                1000s,           1694-52a0
+/examples/inet/kidsnw1/,             -f omnetpp.ini -c General -r 0,                1000s,           6cb8-a854
 
-/examples/inet/multicast/,           -f omnetpp.ini -c General -r 0,                2000s,           4a61-6f17
+/examples/inet/multicast/,           -f omnetpp.ini -c General -r 0,                2000s,           04ae-3aa6
 
 /examples/inet/nclients/,            -f basicHTTP.ini -c General -r 0,              500000s,         0efe-edb8
 /examples/inet/nclients/,            -f filetransfer.ini -c General -r 0,           5s,              da7b-b791
@@ -214,7 +214,7 @@
 # /examples/mpls/net37/,               -f omnetpp.ini -c General -r 0,                100s,            0    # <!> Error in module (TED) R37.LSR0.ted (id=45) during network initialization: Model error: ASSERT: condition !remote.isUnspecified() false in function initialize, networklayer/ted/TED.cc line 86.
 /examples/mpls/testte_failure/,      -f omnetpp.ini -c General -r 0,                10s,             93e2-c901
 #/examples/mpls/testte_failure2/,     -f omnetpp.ini -c General -r 0,                ---100s,         0
-/examples/mpls/testte_reroute/,      -f omnetpp.ini -c General -r 0,                50s,             05a2-0fac
+/examples/mpls/testte_reroute/,      -f omnetpp.ini -c General -r 0,                50s,             daab-ff82
 /examples/mpls/testte_routing/,      -f omnetpp.ini -c General -r 0,                10s,             dc9b-909d
 /examples/mpls/testte_tunnel/,       -f omnetpp.ini -c General -r 0,                50s,             81be-60ca
 
@@ -266,8 +266,8 @@
 /examples/wireless/multiradio/,      -f omnetpp.ini -c IndependentWlans -r 0,       100s,            ec08-47b2
 /examples/wireless/multiradio/,      -f omnetpp.ini -c SwitchedWlans -r 0,          100s,            50ea-0f1d
 /examples/wireless/multiradio/,      -f omnetpp.ini -c RoutedWlans -r 0,            100s,            9a95-6752
-/examples/wireless/synchronized/,    -f omnetpp.ini -c Synchronized -r 0,           2s,              c2fe-1014
-/examples/wireless/synchronized/,    -f omnetpp.ini -c NonSynchronized -r 0,        2s,              80f5-1afd
+/examples/wireless/synchronized/,    -f omnetpp.ini -c Synchronized -r 0,           2s,              aa09-17c2
+/examples/wireless/synchronized/,    -f omnetpp.ini -c NonSynchronized -r 0,        2s,              fe5b-075d
 /examples/wireless/throughput/,      -f omnetpp.ini -c Throughput1 -r 0,            20s,             b987-510f
 /examples/wireless/throughput/,      -f omnetpp.ini -c Throughput2 -r 0,            10s,             b546-967d
 /examples/wireless/wiredandwirelesshostswithap/, -f omnetpp.ini -c General -r 0,                100s,            bd99-fa77
