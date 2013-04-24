@@ -68,8 +68,6 @@ InterfaceEntry::InterfaceEntry(cModule* ifmod)
     ipv4data = NULL;
     ipv6data = NULL;
     genericNetworkProtocolData = NULL;
-    protocol3data = NULL;
-    protocol4data = NULL;
     estimateCostProcessArray.clear();
 }
 
@@ -97,10 +95,6 @@ std::string InterfaceEntry::info() const
         out << " " << ((cObject*)ipv4data)->info(); // Khmm...
     if (ipv6data)
         out << " " << ((cObject*)ipv6data)->info(); // Khmm...
-    if (protocol3data)
-        out << " " << protocol3data->info();
-    if (protocol4data)
-        out << " " << protocol4data->info();
     return out.str();
 }
 
@@ -129,10 +123,6 @@ std::string InterfaceEntry::detailedInfo() const
         out << " " << ((cObject*)ipv4data)->info() << "\n"; // Khmm...
     if (ipv6data)
         out << " " << ((cObject*)ipv6data)->info() << "\n"; // Khmm...
-    if (protocol3data)
-        out << " " << protocol3data->info() << "\n";
-    if (protocol4data)
-        out << " " << protocol4data->info() << "\n";
 
     return out.str();
 }
@@ -151,8 +141,6 @@ void InterfaceEntry::resetInterface()
 {
     delete ipv4data; ipv4data = NULL;
     delete ipv6data; ipv6data = NULL;
-    delete protocol3data; protocol3data = NULL;
-    delete protocol4data; protocol4data = NULL;
     delete genericNetworkProtocolData; genericNetworkProtocolData = NULL;
 }
 
