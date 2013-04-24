@@ -38,11 +38,11 @@
 #endif
 
 
-void InterfaceProtocolData::changed(int category)
+void InterfaceProtocolData::changed(int category, int fieldId)
 {
     // notify the containing InterfaceEntry that something changed
     if (ownerp)
-        ownerp->changed(category);
+        ownerp->changed(category, fieldId);
 }
 
 
@@ -131,10 +131,13 @@ std::string InterfaceEntry::getFullPath() const
     return ownerp == NULL ? getFullName() : ownerp->getHostModule()->getFullPath() + "." + getFullName();
 }
 
-void InterfaceEntry::changed(int category)
+void InterfaceEntry::changed(int category, int fieldId)
 {
     if (ownerp)
-        ownerp->interfaceChanged(this, category);
+    {
+        InterfaceEntryChangeDetails details(this, fieldId);
+        ownerp->interfaceChanged(category, &details);
+    }
 }
 
 void InterfaceEntry::resetInterface()
@@ -148,7 +151,7 @@ void InterfaceEntry::setGenericNetworkProtocolData(GenericNetworkProtocolInterfa
 {
     genericNetworkProtocolData = p;
     p->ownerp = this;
-    configChanged();
+    configChanged(F_GENERIC_DATA);
 }
 
 void InterfaceEntry::setIPv4Data(IPv4InterfaceData *p)
@@ -156,7 +159,7 @@ void InterfaceEntry::setIPv4Data(IPv4InterfaceData *p)
 #ifdef WITH_IPv4
     ipv4data = p;
     p->ownerp = this;
-    configChanged();
+    configChanged(F_IPV4_DATA);
 #else
     throw cRuntimeError(this, "setIPv4Data(): INET was compiled without IPv4 support");
 #endif
@@ -167,7 +170,7 @@ void InterfaceEntry::setIPv6Data(IPv6InterfaceData *p)
 #ifdef WITH_IPv6
     ipv6data = p;
     p->ownerp = this;
-    configChanged();
+    configChanged(F_IPV6_DATA);
 #else
     throw cRuntimeError(this, "setIPv4Data(): INET was compiled without IPv6 support");
 #endif
