@@ -21,7 +21,7 @@
 #include "IPv4NodeConfigurator.h"
 #include "ModuleAccess.h"
 #include "InterfaceTableAccess.h"
-#include "RoutingTableAccess.h"
+#include "IPv4RoutingTableAccess.h"
 #include "NodeStatus.h"
 #include "NodeOperations.h"
 
@@ -41,7 +41,7 @@ void IPv4NodeConfigurator::initialize(int stage)
         const char *networkConfiguratorModule = par("networkConfiguratorModule");
         nodeStatus = dynamic_cast<NodeStatus *>(findContainingNode(this)->getSubmodule("status"));
         interfaceTable = InterfaceTableAccess().get();
-        routingTable = RoutingTableAccess().get();
+        routingTable = IPv4RoutingTableAccess().get();
         networkConfigurator = dynamic_cast<IPv4NetworkConfigurator *>(getModuleByPath(networkConfiguratorModule));
     }
     else if (stage == 1) {
