@@ -28,6 +28,7 @@
 #include "MACAddress.h"
 #include "ModuleAccess.h"
 #include "IPv4Address.h"
+#include "NotificationBoard.h"
 
 // Forward declarations:
 class ARPPacket;
@@ -38,12 +39,13 @@ class IRoutingTable;
 /**
  * ARP implementation.
  */
-class INET_API ARP : public cSimpleModule
+class INET_API ARP : public cSimpleModule, public INotifiable
 {
   public:
     struct ARPCacheEntry;
     typedef std::map<IPv4Address, ARPCacheEntry*> ARPCache;
     typedef std::vector<cMessage*> MsgPtrVector;
+    std::vector<IPv4Address> localAddress;
 
     // IPv4Address -> MACAddress table
     // TBD should we key it on (IPv4Address, InterfaceEntry*)?
@@ -86,7 +88,7 @@ class INET_API ARP : public cSimpleModule
 
     IInterfaceTable *ift;
     IRoutingTable *rt;  // for Proxy ARP
-
+    NotificationBoard* nb;
     // Maps an IP multicast address to an Ethernet multicast address.
     MACAddress mapMulticastAddress(IPv4Address addr);
 
@@ -97,6 +99,7 @@ class INET_API ARP : public cSimpleModule
     const MACAddress getDirectAddressResolution(const IPv4Address &) const;
     const IPv4Address getInverseAddressResolution(const MACAddress &) const;
     void setChangeAddress(const IPv4Address &);
+    virtual void receiveChangeNotification(int category, const cPolymorphic *details);
 
   protected:
     virtual void initialize(int stage);
