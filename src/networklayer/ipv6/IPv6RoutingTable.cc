@@ -25,42 +25,10 @@
 
 #include "IPv6InterfaceData.h"
 #include "InterfaceTableAccess.h"
-
 #include "IPv6TunnelingAccess.h"
 #include "NodeOperations.h"
 
 Define_Module(IPv6RoutingTable);
-
-
-std::string IPv6Route::info() const
-{
-    std::stringstream out;
-    out << getDestPrefix() << "/" << getPrefixLength() << " --> ";
-    out << "if=" << getInterfaceId() << " next hop:" << getNextHop(); // FIXME try printing interface name
-    out << " " << routeSrcName(getSrc());
-    if (getExpiryTime()>0)
-        out << " exp:" << getExpiryTime();
-    return out.str();
-}
-
-std::string IPv6Route::detailedInfo() const
-{
-    return std::string();
-}
-
-const char *IPv6Route::routeSrcName(RouteSrc src)
-{
-    switch (src)
-    {
-        case FROM_RA:         return "FROM_RA";
-        case OWN_ADV_PREFIX:  return "OWN_ADV_PREFIX";
-        case STATIC:          return "STATIC";
-        case ROUTING_PROT:    return "ROUTING_PROT";
-        default:              return "???";
-    }
-}
-
-//----
 
 std::ostream& operator<<(std::ostream& os, const IPv6Route& e)
 {
@@ -591,10 +559,10 @@ void IPv6RoutingTable::addOrUpdateOnLinkPrefix(const IPv6Address& destPrefix, in
     else
     {
         // update existing one; notification-wise, we pretend the route got removed then re-added
-        nb->fireChangeNotification(NF_IPv6_ROUTE_DELETED, route);
+        nb->fireChangeNotification(NF_ROUTE_DELETED, route);
         route->setInterfaceId(interfaceId);
         route->setExpiryTime(expiryTime);
-        nb->fireChangeNotification(NF_IPv6_ROUTE_ADDED, route);
+        nb->fireChangeNotification(NF_ROUTE_ADDED, route);
     }
 
     updateDisplayString();
@@ -630,10 +598,10 @@ void IPv6RoutingTable::addOrUpdateOwnAdvPrefix(const IPv6Address& destPrefix, in
     else
     {
         // update existing one; notification-wise, we pretend the route got removed then re-added
-        nb->fireChangeNotification(NF_IPv6_ROUTE_DELETED, route);
+        nb->fireChangeNotification(NF_ROUTE_DELETED, route);
         route->setInterfaceId(interfaceId);
         route->setExpiryTime(expiryTime);
-        nb->fireChangeNotification(NF_IPv6_ROUTE_ADDED, route);
+        nb->fireChangeNotification(NF_ROUTE_ADDED, route);
     }
 
     updateDisplayString();
@@ -714,20 +682,21 @@ void IPv6RoutingTable::addRoute(IPv6Route *route)
 
     updateDisplayString();
 
-    nb->fireChangeNotification(NF_IPv6_ROUTE_ADDED, route);
+    nb->fireChangeNotification(NF_ROUTE_ADDED, route);
 }
 
-void IPv6RoutingTable::removeRoute(IPv6Route *route)
+IPv6Route *IPv6RoutingTable::removeRoute(IPv6Route *route)
 {
     RouteList::iterator it = std::find(routeList.begin(), routeList.end(), route);
     ASSERT(it!=routeList.end());
 
-    nb->fireChangeNotification(NF_IPv6_ROUTE_DELETED, route); // rather: going to be deleted
+    nb->fireChangeNotification(NF_ROUTE_DELETED, route); // rather: going to be deleted
 
     routeList.erase(it);
     delete route;
 
     updateDisplayString();
+    return route;
 }
 
 int IPv6RoutingTable::getNumRoutes() const
@@ -735,7 +704,7 @@ int IPv6RoutingTable::getNumRoutes() const
     return routeList.size();
 }
 
-IPv6Route *IPv6RoutingTable::getRoute(int i)
+IPv6Route *IPv6RoutingTable::getRoute(int i) const
 {
     ASSERT(i>=0 && i<(int)routeList.size());
     return routeList[i];
@@ -849,8 +818,8 @@ bool IPv6RoutingTable::isOnLinkAddress(const IPv6Address& address)
 
     return false;
 }
-#endif /* WITH_xMIPv6 */
 
+#endif /* WITH_xMIPv6 */
 
 bool IPv6RoutingTable::handleOperationStage(LifecycleOperation *operation, int stage, IDoneCallback *doneCallback)
 {
