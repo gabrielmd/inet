@@ -110,7 +110,7 @@ void IPv4::updateDisplayString()
 void IPv4::handleMessage(cMessage *msg)
 {
     if (msg->getKind() == IP_C_REGISTER_PROTOCOL) {
-        IPRegisterProtocolCommand * command = check_and_cast<IPRegisterProtocolCommand *>(msg->removeControlInfo());
+        IPRegisterProtocolCommand * command = check_and_cast<IPRegisterProtocolCommand *>(msg->getControlInfo());
         mapping.addProtocolMapping(command->getProtocol(), msg->getArrivalGate()->getIndex());
         delete msg;
     }
