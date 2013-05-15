@@ -21,7 +21,7 @@
 #include "IPv4NodeConfigurator.h"
 #include "ModuleAccess.h"
 #include "InterfaceTableAccess.h"
-#include "RoutingTableAccess.h"
+#include "IPv4RoutingTableAccess.h"
 #include "NodeStatus.h"
 #include "NodeOperations.h"
 
@@ -32,7 +32,7 @@ void IPv4NodeConfigurator::initialize(int stage)
     if (stage == 0) {
         const char *networkConfiguratorModule = par("networkConfiguratorModule");
         interfaceTable = InterfaceTableAccess().get();
-        routingTable = RoutingTableAccess().get();
+        routingTable = IPv4RoutingTableAccess().get();
         networkConfigurator = dynamic_cast<IPv4NetworkConfigurator *>(getModuleByPath(networkConfiguratorModule));
     }
     else if (stage == 1) {
@@ -87,7 +87,7 @@ void IPv4NodeConfigurator::prepareInterface(InterfaceEntry *interfaceEntry)
         if (interfaceEntry->isMulticast())
         {
             interfaceData->joinMulticastGroup(IPv4Address::ALL_HOSTS_MCAST);
-            if (routingTable->isIPForwardingEnabled())
+            if (routingTable->isForwardingEnabled())
                 interfaceData->joinMulticastGroup(IPv4Address::ALL_ROUTERS_MCAST);
         }
     }

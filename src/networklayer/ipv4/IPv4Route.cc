@@ -39,8 +39,10 @@ std::string IPv4Route::info() const
     out << "gw:"; if (gateway.isUnspecified()) out << "*  "; else out << gateway << "  ";
     out << "mask:"; if (netmask.isUnspecified()) out << "*  "; else out << netmask << "  ";
     out << "metric:" << metric << " ";
-    out << "if:"; if (!interfacePtr) out << "*  "; else out << interfacePtr->getName() << "(" << interfacePtr->ipv4Data()->getIPAddress() << ")  ";
-    out << (gateway.isUnspecified() ? "DIRECT" : "REMOTE");
+    out << "if:"; if (!interfacePtr) out << "*"; else out << interfacePtr->getName();
+    if (interfacePtr->ipv4Data())
+        out << "(" << interfacePtr->ipv4Data()->getIPAddress() << ")";
+    out << "  " << (gateway.isUnspecified() ? "DIRECT" : "REMOTE");
     out << " " << IRoute::sourceTypeName(sourceType);
     return out.str();
 }

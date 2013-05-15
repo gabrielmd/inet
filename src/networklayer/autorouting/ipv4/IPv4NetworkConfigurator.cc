@@ -1432,7 +1432,7 @@ void IPv4NetworkConfigurator::readManualRouteConfiguration(IPv4Topology& topolog
             // parse and check the attributes
             IPv4Address destination;
             if (!isEmpty(destinationAttr) && strcmp(destinationAttr, "*"))
-                destination = resolve(destinationAttr, AddressResolver::ADDR_IPv4).get4();
+                destination = resolve(destinationAttr, AddressResolver::ADDR_IPv4).toIPv4();
             IPv4Address netmask;
             if (!isEmpty(netmaskAttr) && strcmp(netmaskAttr, "*"))
             {
@@ -1502,7 +1502,7 @@ void IPv4NetworkConfigurator::readManualMulticastRouteConfiguration(IPv4Topology
             // parse and check the attributes
             IPv4Address source;
             if (!isEmpty(sourceAttr) && strcmp(sourceAttr, "*"))
-                source = resolve(sourceAttr, AddressResolver::ADDR_IPv4).get4();
+                source = resolve(sourceAttr, AddressResolver::ADDR_IPv4).toIPv4();
             IPv4Address netmask;
             if (!isEmpty(netmaskAttr) && strcmp(netmaskAttr, "*"))
             {
@@ -1613,7 +1613,7 @@ void IPv4NetworkConfigurator::resolveInterfaceAndGateway(Node *node, const char 
     ASSERT(isNotEmpty(gatewayAttr)); // see "if" above
 
     // check syntax of gatewayAttr, and obtain an initial value
-    outGateway = resolve(gatewayAttr, AddressResolver::ADDR_IPv4).get4();
+    outGateway = resolve(gatewayAttr, AddressResolver::ADDR_IPv4).toIPv4();
 
     IPv4Address gatewayAddressOnCommonLink;
 

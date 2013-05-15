@@ -144,8 +144,7 @@ void InterfaceEntry::resetInterface()
 {
     delete ipv4data; ipv4data = NULL;
     delete ipv6data; ipv6data = NULL;
-    delete protocol3data; protocol3data = NULL;
-    delete protocol4data; protocol4data = NULL;
+    delete genericNetworkProtocolData; genericNetworkProtocolData = NULL;
 }
 
 void InterfaceEntry::setGenericNetworkProtocolData(GenericNetworkProtocolInterfaceData *p)

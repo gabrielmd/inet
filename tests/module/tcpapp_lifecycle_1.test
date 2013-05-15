@@ -18,6 +18,8 @@ ned-path = .;../../../../src;../../lib
 cmdenv-express-mode = false
 sim-time-limit = 3s
 record-eventlog = true
+debug-on-errors = true
+debugger-attach-on-error = true
 
 **.hasStatus = true
 **.initialStatus = "down"
