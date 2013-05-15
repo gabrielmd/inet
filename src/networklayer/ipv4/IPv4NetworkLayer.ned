@@ -24,6 +24,7 @@ import inet.networklayer.ipv4.ErrorHandling;
 import inet.networklayer.ipv4.ICMP;
 import inet.networklayer.ipv4.IIGMP;
 import inet.networklayer.ipv4.IPv4;
+import inet.networklayer.contract.INetworkLayer;
 
 
 //
@@ -31,7 +32,7 @@ import inet.networklayer.ipv4.IPv4;
 //
 // Interfaces to transport layer: TCP, UDP, echo/ping, RSVP
 //
-module IPv4NetworkLayer
+module IPv4NetworkLayer like INetworkLayer
 {
     parameters:
         bool proxyARP = default(true);
@@ -114,4 +115,3 @@ module IPv4NetworkLayer
             ip.queueOut[i] --> { @display("m=s"); } --> ifOut[i];
         }
 }
-
