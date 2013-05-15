@@ -26,9 +26,9 @@
 #include "INETDefs.h"
 #include "Topology.h"
 #include "IInterfaceTable.h"
-#include "IRoutingTable.h"
+#include "IIPv4RoutingTable.h"
 #include "IPv4Address.h"
-#include "IPvXAddressResolver.h"
+#include "AddressResolver.h"
 #include "IPv4InterfaceData.h"
 #include "PatternMatcher.h"
 
@@ -47,7 +47,7 @@
  * For more info please see the NED file.
  */
 // TODO: remove topology arguments from functions or perhaps move those functions into topology or leave it as it is?
-class INET_API IPv4NetworkConfigurator : public cSimpleModule, public IPvXAddressResolver
+class INET_API IPv4NetworkConfigurator : public cSimpleModule, public AddressResolver
 {
     protected:
         class LinkInfo;
@@ -60,7 +60,7 @@ class INET_API IPv4NetworkConfigurator : public cSimpleModule, public IPvXAddres
             public:
                 cModule *module;
                 IInterfaceTable *interfaceTable;
-                IRoutingTable *routingTable;
+                IIPv4RoutingTable *routingTable;
                 std::vector<InterfaceInfo *> interfaceInfos;
                 std::vector<IPv4Route *> staticRoutes;
                 std::vector<IPv4MulticastRoute *> staticMulticastRoutes;
@@ -347,8 +347,8 @@ class INET_API IPv4NetworkConfigurator : public cSimpleModule, public IPvXAddres
         bool tryToMergeAnyTwoRoutes(RoutingTableInfo& routingTableInfo);
 
     public:
-        // TODO: find a better way to reuse and override IPvXAddressResolver functionality
-        bool getInterfaceIPv4Address(IPvXAddress &ret, InterfaceEntry *ie, bool netmask)
+        // TODO: find a better way to reuse and override AddressResolver functionality
+        bool getInterfaceIPv4Address(Address &ret, InterfaceEntry *ie, bool netmask)
         {
             // TODO: replace linear search
             for (int i = 0; i < (int)topology.linkInfos.size(); i++) {
