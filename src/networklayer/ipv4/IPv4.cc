@@ -58,6 +58,7 @@ void IPv4::initialize(int stage)
         defaultMCTimeToLive = par("multicastTimeToLive");
         fragmentTimeoutTime = par("fragmentTimeout");
         forceBroadcast = par("forceBroadcast");
+        useProxyARP = par("useProxyARP");
 
         curFragmentId = 0;
         lastCheckTime = 0;
@@ -826,10 +827,8 @@ void IPv4::sendDatagramToOutput(IPv4Datagram *datagram, InterfaceEntry *ie, IPv4
             sendPacketToNIC(datagram, ie);
         }
         else {
-            //FIXME currently ARP has a proxyARP parameter!!! maybe move this code there....
-            bool proxyArpEnabled = true; //TODO parameter
             if (nextHopAddr.isUnspecified()) {
-                if (proxyArpEnabled) {
+                if (useProxyARP) {
                     nextHopAddr = datagram->getDestAddress();
                     EV << "no next-hop address, using destination address " << nextHopAddr << " (proxy ARP)\n";
                 }
