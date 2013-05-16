@@ -654,13 +654,23 @@ MACAddress ARP::getDirectAddressResolution(const IPv4Address & add) const
     {
         it = arpCache.find(add);
         if (it!=arpCache.end())
-            return (*it).second->macAddress;
+        {
+            if ((*it).second->pending)
+            {}  // has pending packets
+            else if ((*it).second->lastUpdate + cacheTimeout < simTime())
+            {}  // expired
+            else
+                return (*it).second->macAddress;
+        }
     }
     return MACAddress::UNSPECIFIED_ADDRESS;
 }
 
 IPv4Address ARP::getInverseAddressResolution(const MACAddress &add) const
 {
+    if (add.isUnspecified())
+        return IPv4Address::UNSPECIFIED_ADDRESS;
+
     ARPCache::const_iterator it;
     if (globalARP)
     {
@@ -670,9 +680,13 @@ IPv4Address ARP::getInverseAddressResolution(const MACAddress &add) const
     }
     else
     {
+        simtime_t now = simTime();
         for (it = arpCache.begin(); it!=arpCache.end(); it++)
             if ((*it).second->macAddress==add)
-                return (*it).first;
+            {
+                if ((*it).second->lastUpdate + cacheTimeout >= now)
+                    return (*it).first;
+            }
     }
     return IPv4Address::UNSPECIFIED_ADDRESS;
 }
