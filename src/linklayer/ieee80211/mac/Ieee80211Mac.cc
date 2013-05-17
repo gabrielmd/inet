@@ -1146,6 +1146,7 @@ void Ieee80211Mac::handleWithFSM(cMessage *msg)
                                   fr = getCurrentTransmission();
                                   numBites += fr->getBitLength();
                                   bites() += fr->getBitLength();
+                                  numFramesOverTxOp--;
 
 
                                   macDelay()->record(simTime() - fr->getMACArrive());
@@ -1763,7 +1764,7 @@ void Ieee80211Mac::sendDataFrame(Ieee80211DataOrMgmtFrame *frameToSend)
     {
         //we start packet burst within TXOP time period
         txop = true;
-
+        numFramesOverTxOp = 0;
         for (frame=transmissionQueue()->begin(); frame != transmissionQueue()->end(); ++frame)
         {
             count++;
@@ -1772,6 +1773,7 @@ void Ieee80211Mac::sendDataFrame(Ieee80211DataOrMgmtFrame *frameToSend)
             if (TXOP()>time+t)
             {
                 time += t;
+                numFramesOverTxOp++;
                 EV << "adding t \n";
             }
             else
