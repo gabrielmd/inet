@@ -305,6 +305,9 @@ class INET_API Ieee80211Mac : public WirelessMacBase, public INotifiable
         EDCA,
     };
   protected:
+    // if true MAC sublayer store the frames instead of the management sublayer
+    bool queueMode;
+
     Mode mode;
 
     /** Sequence number to be assigned to the next frame */
@@ -679,6 +682,11 @@ class INET_API Ieee80211Mac : public WirelessMacBase, public INotifiable
         nb->fireChangeNotification(category, pkt);
         pkt->setKind(tempKind);
     }
+  public:
+    virtual void setQueueModeTrue() {queueMode = true;}
+    virtual void setQueueModeFalse() {queueMode = false;}
+    virtual State getState() {return static_cast<State>(fsm.getState());}
+    virtual unsigned int getQueueSize() {return transmissionQueueSize();}
 };
 
 #endif

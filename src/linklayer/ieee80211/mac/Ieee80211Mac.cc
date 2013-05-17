@@ -64,6 +64,7 @@ Ieee80211Mac::Ieee80211Mac()
     mediumStateChange = NULL;
     pendingRadioConfigMsg = NULL;
     classifier = NULL;
+    queueMode = false;
 }
 
 Ieee80211Mac::~Ieee80211Mac()
@@ -600,7 +601,7 @@ void Ieee80211Mac::handleSelfMsg(cMessage *msg)
 
 void Ieee80211Mac::handleUpperMsg(cPacket *msg)
 {
-    if (queueModule && numCategories()>1 && (int)transmissionQueueSize() < maxQueueSize)
+    if (queueModule && ((numCategories()>1 && (int)transmissionQueueSize() < maxQueueSize) || (queueMode  && (int)transmissionQueueSize() < maxQueueSize)))
     {
         // the module are continuously asking for packets, except if the queue is full
         EV << "requesting another frame from queue module\n";
@@ -893,9 +894,11 @@ void Ieee80211Mac::handleWithFSM(cMessage *msg)
     logState();
     stateVector.record(fsm.getState());
 
+    bool receptionError = false;
     if (frame && isLowerMsg(frame))
     {
         lastReceiveFailed = (msgKind == COLLISION || msgKind == BITERROR);
+        receptionError = (msgKind == COLLISION || msgKind == BITERROR);
         scheduleReservePeriod(frame);
     }
 
@@ -1137,6 +1140,49 @@ void Ieee80211Mac::handleWithFSM(cMessage *msg)
         FSMA_State(WAITACK)
         {
             FSMA_Enter(scheduleDataTimeoutPeriod(getCurrentTransmission()));
+#ifndef DISABLEERRORACK
+            FSMA_Event_Transition(Reception-ACK-failed,
+                                  isLowerMsg(msg) && receptionError && retryCounter(oldcurrentAC) == transmissionLimit - 1,
+                                  IDLE,
+                                  currentAC=oldcurrentAC;
+                                  cancelTimeoutPeriod();
+                                  giveUpCurrentTransmission();
+                                  txop = false;
+                                  if (endTXOP->isScheduled()) cancelEvent(endTXOP);
+                                 );
+            FSMA_Event_Transition(Reception-ACK-error,
+                                  isLowerMsg(msg) && receptionError,
+                                  DEFER,
+                                  currentAC=oldcurrentAC;
+                                  cancelTimeoutPeriod();
+                                  retryCurrentTransmission();
+                                  txop = false;
+                                  if (endTXOP->isScheduled()) cancelEvent(endTXOP);
+                                 );
+#endif
+            FSMA_Event_Transition(Receive-ACK-TXOP-Empty,
+                                  isLowerMsg(msg) && isForUs(frame) && frameType == ST_ACK && txop && transmissionQueue(oldcurrentAC)->size() == 1,
+                                  DEFER,
+                                  currentAC = oldcurrentAC;
+                                  if (retryCounter() == 0) numSentWithoutRetry()++;
+                                  numSent()++;
+                                  fr = getCurrentTransmission();
+                                  numBites += fr->getBitLength();
+                                  bites() += fr->getBitLength();
+                                  numFramesOverTxOp--;
+                                  macDelay()->record(simTime() - fr->getMACArrive());
+                                  if (maxjitter() == 0 || maxjitter() < (simTime() - fr->getMACArrive()))
+                                      maxjitter() = simTime() - fr->getMACArrive();
+                                  if (minjitter() == 0 || minjitter() > (simTime() - fr->getMACArrive()))
+                                      minjitter() = simTime() - fr->getMACArrive();
+                                  EV << "record macDelay AC" << currentAC << " value " << simTime() - fr->getMACArrive() <<endl;
+                                  numSentTXOP++;
+                                  cancelTimeoutPeriod();
+                                  finishCurrentTransmission();
+                                  resetCurrentBackOff();
+                                  txop = false;
+                                  if (endTXOP->isScheduled()) cancelEvent(endTXOP);
+                                  );
             FSMA_Event_Transition(Receive-ACK-TXOP,
                                   isLowerMsg(msg) && isForUs(frame) && frameType == ST_ACK && txop,
                                   WAITSIFS,
@@ -1222,6 +1268,7 @@ void Ieee80211Mac::handleWithFSM(cMessage *msg)
                                   isLowerMsg(msg) && retryCounter(oldcurrentAC) == transmissionLimit - 1,
                                   RECEIVE,
                                   currentAC=oldcurrentAC;
+                                  cancelTimeoutPeriod();
                                   giveUpCurrentTransmission();
                                   txop = false;
                                   if (endTXOP->isScheduled()) cancelEvent(endTXOP);
@@ -1230,6 +1277,7 @@ void Ieee80211Mac::handleWithFSM(cMessage *msg)
                                  isLowerMsg(msg),
                                  RECEIVE,
                                  currentAC=oldcurrentAC;
+                                 cancelTimeoutPeriod();
                                  retryCurrentTransmission();
                                  txop = false;
                                  if (endTXOP->isScheduled()) cancelEvent(endTXOP);
@@ -1265,6 +1313,22 @@ void Ieee80211Mac::handleWithFSM(cMessage *msg)
         FSMA_State(WAITCTS)
         {
             FSMA_Enter(scheduleCTSTimeoutPeriod());
+#ifndef DISABLEERRORACK
+            FSMA_Event_Transition(Reception-CTS-Failed,
+                                   isLowerMsg(msg) && receptionError && retryCounter(oldcurrentAC) == transmissionLimit - 1,
+                                   IDLE,
+                                   cancelTimeoutPeriod();
+                                   currentAC = oldcurrentAC;
+                                   giveUpCurrentTransmission();
+                                  );
+            FSMA_Event_Transition(Reception-CTS-error,
+                                   isLowerMsg(msg) && receptionError,
+                                   DEFER,
+                                   cancelTimeoutPeriod();
+                                   currentAC = oldcurrentAC;
+                                   retryCurrentTransmission();
+                                  );
+#endif
             FSMA_Event_Transition(Receive-CTS,
                                   isLowerMsg(msg) && isForUs(frame) && frameType == ST_CTS,
                                   WAITSIFS,
@@ -1631,7 +1695,8 @@ void Ieee80211Mac::scheduleMulticastTimeoutPeriod(Ieee80211DataOrMgmtFrame *fram
 void Ieee80211Mac::cancelTimeoutPeriod()
 {
     EV << "canceling timeout period\n";
-    cancelEvent(endTimeout);
+    if (endTimeout->isScheduled())
+        cancelEvent(endTimeout);
 }
 
 void Ieee80211Mac::scheduleCTSTimeoutPeriod()
@@ -1837,7 +1902,7 @@ Ieee80211DataOrMgmtFrame *Ieee80211Mac::buildDataFrame(Ieee80211DataOrMgmtFrame 
         frame->setDuration(0);
     else if (!frameToSend->getMoreFragments())
     {
-        if (txop)
+        if (txop && transmissionQueue()->size() > 1)
 
         {
             // ++ operation is safe because txop is true
@@ -2607,7 +2672,7 @@ Ieee80211Mac::getControlAnswerMode(ModulationType reqMode)
    */
     bool found = false;
     ModulationType mode;
-    for (uint32_t idx = Ieee80211Descriptor::getMinIdx(opMode); idx < Ieee80211Descriptor::size(); idx++)
+    for (int32_t idx = Ieee80211Descriptor::getMinIdx(opMode); idx < Ieee80211Descriptor::size(); idx++)
     {
         if (Ieee80211Descriptor::getDescriptor(idx).mode != opMode)
             break;
