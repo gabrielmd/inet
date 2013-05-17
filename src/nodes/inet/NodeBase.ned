@@ -51,6 +51,8 @@ module NodeBase
         string mobilityType = default(numRadios > 0 ? "StationaryMobility" : "");
         bool IPForward = default(true);
         bool forwardMulticast = default(false);
+        routingTable.IPForward = IPForward;
+        routingTable.forwardMulticast = forwardMulticast;
     gates:
         input radioIn[numRadios] @directIn;
         inout pppg[] @labels(PPPFrame-conn);
@@ -80,8 +82,6 @@ module NodeBase
         routingTable: IPv4RoutingTable {
             parameters:
                 @display("p=53,225;is=s");
-                IPForward = IPForward;
-                forwardMulticast = forwardMulticast;
         }
 
         // linklayer
