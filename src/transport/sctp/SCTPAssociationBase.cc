@@ -157,7 +157,7 @@ SCTPPathVariables::~SCTPPathVariables()
 }
 
 
-const Address SCTPDataVariables::zeroAddress = Address("0.0.0.0");
+const Address SCTPDataVariables::zeroAddress = Address();
 
 SCTPDataVariables::SCTPDataVariables()
 {
@@ -332,7 +332,7 @@ SCTPAssociation::SCTPAssociation(SCTP* _module, int32 _appGateIndex, int32 _asso
 
     // ====== Path Info ======================================================
     SCTPPathInfo* pinfo = new SCTPPathInfo("pathInfo");
-    pinfo->setRemoteAddress(Address("0.0.0.0"));
+    pinfo->setRemoteAddress(Address());
 
     // ====== Timers =========================================================
     char timerName[128];
@@ -409,7 +409,7 @@ bool SCTPAssociation::processTimer(cMessage *msg)
     SCTPPathInfo* pinfo = check_and_cast<SCTPPathInfo*>(msg->getControlInfo());
     Address addr = pinfo->getRemoteAddress();
 
-    if (addr != Address("0.0.0.0"))
+    if (!addr.isUnspecified())
         path = getPath(addr);
 
     // first do actions
