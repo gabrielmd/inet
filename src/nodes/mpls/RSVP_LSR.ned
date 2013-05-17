@@ -41,7 +41,6 @@ module RSVP_LSR
         bool hasStatus = default(false);
         string peers;
         string routerId = default("auto");
-        string routingFile = default("");
     gates:
         inout pppg[] @labels(PPPFrame-conn);
     submodules:
@@ -56,7 +55,6 @@ module RSVP_LSR
             parameters:
                 IPForward = true;
                 routerId = routerId;
-                routingFile = routingFile;
                 @display("p=68,138");
         }
         interfaceTable: InterfaceTable {

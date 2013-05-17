@@ -38,7 +38,6 @@ module BurstHost
         @display("i=device/pc3");
         string trafGenType;
         bool IPForward = default(false);
-        string routingFile = default("");
     gates:
         inout pppg[] @labels(PPPFrame-conn);
     submodules:
@@ -54,7 +53,6 @@ module BurstHost
             parameters:
                 IPForward = IPForward;
                 routerId = "";
-                routingFile = routingFile;
                 @display("p=83,206");
         }
         trafGen: <trafGenType> like IIPvXTrafficGenerator {
