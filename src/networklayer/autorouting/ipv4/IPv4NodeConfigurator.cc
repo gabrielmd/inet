@@ -30,9 +30,10 @@ Define_Module(IPv4NodeConfigurator);
 void IPv4NodeConfigurator::initialize(int stage)
 {
     if (stage == 0) {
+        const char *routingTableModule = par("routingTableModule");
         const char *networkConfiguratorModule = par("networkConfiguratorModule");
         interfaceTable = InterfaceTableAccess().get();
-        routingTable = IPv4RoutingTableAccess().get();
+        routingTable = dynamic_cast<IIPv4RoutingTable *>(getModuleByPath(routingTableModule));
         networkConfigurator = dynamic_cast<IPv4NetworkConfigurator *>(getModuleByPath(networkConfiguratorModule));
     }
     else if (stage == 1) {
