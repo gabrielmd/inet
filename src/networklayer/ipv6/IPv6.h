@@ -38,7 +38,7 @@ class ICMPv6Message;
 /**
  * IPv6 implementation.
  */
-class INET_API IPv6 : public QueueBase, public ILifecycle, INetfilter
+class INET_API IPv6 : public QueueBase, public ILifecycle, public INetfilter
 {
   public:
     /**
