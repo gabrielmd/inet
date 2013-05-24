@@ -264,6 +264,8 @@ void SCTPAssociation::sendToIP(SCTPMessage*       sctpmsg,
             sctpmsg->setControlInfo(controlInfo);
             sctpMain->send(sctpmsg, "to_ip");
         }
+        else
+            throw cRuntimeError("Unknown address type: %d", (int)(dest.getType()));
         recordInPathVectors(sctpmsg, dest);
     }
     sctpEV3 << "Sent to " << dest << endl;
@@ -450,6 +452,9 @@ void SCTPAssociation::sendInit()
             }
         }
     }
+    else
+        throw cRuntimeError("Unknown address type: %d", (int)(remoteAddr.getType()));
+
     sctpMain->printInfoConnMap();
     initChunk->setBitLength(length*8);
     sctpmsg->addChunk(initChunk);
@@ -2170,4 +2175,5 @@ int SCTPAssociation::getAddressLevel(const Address& addr)
                 throw cRuntimeError("Unknown IPv4 address category: %d", (int)(addr.toIPv4().getAddressCategory()));
         }
     }
+    throw cRuntimeError("Unknown address type: %d", (int)(addr.getType()));
 }
