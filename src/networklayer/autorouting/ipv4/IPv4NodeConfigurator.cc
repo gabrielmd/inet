@@ -44,7 +44,7 @@ void IPv4NodeConfigurator::initialize(int stage)
             throw cRuntimeError("The container @node module not found");
         nodeStatus = dynamic_cast<NodeStatus *>(node->getSubmodule("status"));
         interfaceTable = InterfaceTableAccess().get();
-        routingTable = AddressResolver().findRoutingTableOf(node);
+        routingTable = AddressResolver().findIPv4RoutingTableOf(node);
         networkConfigurator = dynamic_cast<IPv4NetworkConfigurator *>(getModuleByPath(networkConfiguratorModule));
     }
     else if (stage == 1) {
