@@ -29,10 +29,10 @@ network GPSRNetworkRandom
                 config = xml("<config><interface hosts='*' address='145.236.x.x' netmask='255.255.0.0'/></config>");
                 @display("p=50,100");
         }
-        //        routingTableRecorder: RoutingTableRecorder {
-        //            parameters:
-        //                @display("p=50,150");
-        //        }
+        routingTableRecorder: RoutingTableRecorder {
+            parameters:
+                @display("p=50,150");
+        }
         lifecycleController: LifecycleController {
             parameters:
                 @display("p=50,200");
