@@ -46,7 +46,7 @@ const IPv6Address IPv6Address::LL_MANET_ROUTERS("FF02:0:0:0:0:0:0:6D");
 
 // Helper: Parses at most 8 colon-separated 16-bit hex numbers ("groups"),
 // and returns their count. Advances s just over the last hex digit converted.
-static int parseGroups(const char *&s, int *groups)
+static int parseGroups(const char *&s, unsigned int *groups)
 {
     int k = 0;
     while (1)
@@ -55,17 +55,18 @@ static int parseGroups(const char *&s, int *groups)
         groups[k] = strtoul(s, &e, 16);
         if (s==e) { // no hex digit converted
             if (k!=0) s--;  // "unskip" preceding ':'
-            return k;
+            break;
         }
         // if negative or too big, return (s will point to beginning of large number)
         if (groups[k]<0 || groups[k]>0xffff)
-            return k;
+            break;
         k++;  // group[k] successfully stored
         s = e;  // skip converted hex number
         if (*s!=':' || k==8)
-            return k;
+            break;
         s++;  // skip ':'
     }
+    return k;
 }
 
 bool IPv6Address::doTryParse(const char *&addr)
@@ -78,14 +79,14 @@ bool IPv6Address::doTryParse(const char *&addr)
     }
 
     // parse and store 16-bit units
-    int groups[8];
+    unsigned int groups[8];
     int numGroups = parseGroups(addr, groups);
 
     // if address string contains "::", parse and store second half too
     if (*addr==':' && *(addr+1)==':')
     {
         addr += 2;
-        int suffixGroups[8];
+        unsigned int suffixGroups[8];
         int numSuffixGroups = parseGroups(addr, suffixGroups);
 
         // merge suffixGroups[] into groups[]
@@ -148,7 +149,7 @@ void IPv6Address::set(const char *addr)
 }
 
 // Helper: finds the longest sequence of zeroes in the address (at least with len=2)
-static void findGap(int *groups, int& start, int& end)
+static void findGap(unsigned int *groups, int& start, int& end)
 {
     start = end = 0;
     int beg = -1;
@@ -181,7 +182,7 @@ std::string IPv6Address::str() const
         return std::string("<unspec>");
 
     // convert to 16-bit grops
-    int groups[8] = {
+    unsigned int groups[8] = {
         (d[0]>>16), (d[0]&0xffff), (d[1]>>16), (d[1]&0xffff),
         (d[2]>>16), (d[2]&0xffff), (d[3]>>16), (d[3]&0xffff)
     };
