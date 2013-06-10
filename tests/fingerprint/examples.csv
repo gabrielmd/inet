@@ -277,7 +277,7 @@
 
 /examples/rip/dynamictest/,          -f omnetpp.ini -c stable -r 0,                 500s,            ab33-0ae5
 /examples/rip/dynamictest/,          -f omnetpp.ini -c dynamic1 -r 0,               500s,            3959-b3d2
-# /examples/rip/dynamictest/,          -f omnetpp.ini -c dynamic2 -r 0,               500s,            0000-0000    # MISSING FILE: examples/rip/dynamictest/scenario2.xml !!!!
+/examples/rip/dynamictest/,          -f omnetpp.ini -c dynamic2 -r 0,               500s,            bcc9-faf9
 /examples/rip/simpletest/,           -f omnetpp.ini -c IPv4 -r 0,                   100s,            9607-953f
 
 # /examples/rtp/multicast1/,           -f omnetpp.ini -c General -r 0,                100s,            a422-b4ed    # unstable fingerprint
