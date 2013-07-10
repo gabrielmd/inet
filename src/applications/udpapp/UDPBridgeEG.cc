@@ -44,14 +44,14 @@ void UDPBridgeEG::initialize(int stage)
     counter = 0;
 
     // keep tracking the counter
-    numSentUDP = 0;
-    numReceivedUDP = 0;
-    numSentUSB = 0;
-    numReceivedUSB = 0;
-    WATCH(numSentUDP);
-    WATCH(numReceivedUDP);
-    WATCH(numSentUSB);
-    WATCH(numReceivedUSB);
+    nbPacketsReceivedUDP = 0;
+    nbPacketsSentUDP = 0;
+    nbPacketsReceivedUSB = 0;
+    nbPacketsSentUSB = 0;
+    WATCH(nbPacketsReceivedUDP);
+    WATCH(nbPacketsSentUDP);
+    WATCH(nbPacketsReceivedUSB);
+    WATCH(nbPacketsSentUSB);
 
     // udp configurations
     sentPkSignal = registerSignal("sentPk");
@@ -77,51 +77,28 @@ void UDPBridgeEG::initialize(int stage)
 
 void UDPBridgeEG::finish()
 {
-    recordScalar("UDP packets sent", numSentUDP);
-    recordScalar("UDP packets received", numReceivedUDP);
+    recordScalar("nbPacketsReceivedUDP", nbPacketsReceivedUDP);
+    recordScalar("nbPacketsSentUDP", nbPacketsSentUDP);
 
-    recordScalar("USB packets sent", numSentUSB);
-    recordScalar("USB packets received", numReceivedUSB);
+    recordScalar("nbPacketsReceivedUSB", nbPacketsReceivedUSB);
+    recordScalar("nbPacketsSentUSB", nbPacketsSentUSB);
 }
 
-IPvXAddress UDPBridgeEG::chooseDestAddr()
-{
-    // it can send to a random address, to all the neighbors, ...
-    //int k = intrand(destAddresses.size());
-    //return destAddresses[k];
-    return destAddresses[0];
-}
-
-void UDPBridgeEG::sendPacket(cMessage *msg)
-{
-
-
-    char payload[100];
-    sprintf(payload, "%s %s", msg->getName(), networkType);
-    cPacket * pkt = new cPacket(payload);
-
-    emit(sentPkSignal, pkt);
-
-    IPvXAddress destAddr = chooseDestAddr();
-    socket.sendTo(pkt, destAddr, destPort);
-
-    numSentUDP++;
-    delete msg;
-}
-
+/*
+ * @brief handles the received message.
+ */
 void UDPBridgeEG::handleMessage(cMessage *msg)
 {
     if (msg->isSelfMessage()) {
-
-
+        // does not use self message
     } else if(msg->getKind() == UPDATE_PARAM) {
         // received from sink node ... will retransmit
-        sendPacket(msg);
+        processUSBPacket(msg);
     }else if (msg->getKind() == UDP_I_DATA)
     {
         // sent from another EG through UDP
         // process incoming packet
-        processPacket(msg);
+        processUDPPacket(msg);
     }
     else if (msg->getKind() == UDP_I_ERROR)
     {
@@ -136,20 +113,49 @@ void UDPBridgeEG::handleMessage(cMessage *msg)
     if (ev.isGUI())
     {
         char buf[40];
-        sprintf(buf, "rcvd: %d pks\nsent: %d pks", numReceivedUDP, numSentUDP);
+        sprintf(buf, "rcvd: %d pks\nsent: %d pks", nbPacketsSentUDP, nbPacketsReceivedUDP);
         getDisplayString().setTagArg("t", 0, buf);
     }
 }
 
-void UDPBridgeEG::processPacket(cMessage *msg)
+/**
+ * @brief handles the packet received from the Sink.
+ */
+void UDPBridgeEG::processUSBPacket(cMessage *msg)
+{
+    char payload[100];
+    sprintf(payload, "%s %s", msg->getName(), networkType);
+    cPacket * pkt = new cPacket(payload);
+    emit(sentPkSignal, pkt);
+
+    // sends a unicast to every neighbor
+    for(unsigned k = 0; k < destAddresses.size(); k++){
+        socket.sendTo(pkt, destAddresses[k], destPort);
+        nbPacketsReceivedUDP++;
+    }
+
+    // logs received message
+    emit(rcvdPkSignal, msg);
+    EV << "Received message via USB: " << msg->getName() << endl;
+    nbPacketsSentUSB++;
+
+    delete msg;
+}
+
+/**
+ * @brief handles the packet received from another EG.
+ */
+void UDPBridgeEG::processUDPPacket(cMessage *msg)
 {
     char type[3]; // network type ("T", "RH"...)
     int value;
     sscanf(msg->getName(), "%d %s", &value, type);
-
-
     double trafficParam;
 
+    /* Here comes the algorithm that correlates different measured data.
+     * According to the values received by other networks and to its own
+     * data, the EG can build a plan and transmit it to the sink node.
+     */
     if(!strcmp(networkType, "T") && !strcmp(type, "RH")){ // received relative humidity and controls temperature
         if(value < 20){
             trafficParam = 1;
@@ -169,12 +175,14 @@ void UDPBridgeEG::processPacket(cMessage *msg)
 
     }
 
+    /*
+     * If the new plan is different to the old one, transmits it to the sink.
+     */
     if(networkTrafficParam != trafficParam){
         char payload[10];
         networkTrafficParam = trafficParam;
         sprintf(payload, "%lf", networkTrafficParam);
-
-        cPacket *pkt = new cPacket(payload, UPDATE_PARAM);
+        cPacket *pkt = new cPacket(payload, UPDATE_PARAM); // packet with the new plan
         sendUSB(pkt);
     }
 
@@ -182,11 +190,16 @@ void UDPBridgeEG::processPacket(cMessage *msg)
     emit(rcvdPkSignal, msg);
     EV << "Received packet: " << UDPSocket::getReceivedPacketInfo(PK(msg)) << endl;
     delete msg;
-    numReceivedUDP++;
+    nbPacketsSentUDP++;
 }
 
 void UDPBridgeEG::sendUSB(cPacket *pkt)
 {
     send(pkt, USBLayerOut);
+
+    // logs transmitted message
+    emit(sentPkSignal, pkt);
+    EV << "Transmitted packet via USB: " << pkt->getName() << endl;
+    nbPacketsReceivedUSB++;
 }
 

@@ -41,11 +41,11 @@ class INET_API UDPBridgeEG : public cSimpleModule
     static int counter; // counter for generating a global number for each packet
 
     // statistics
-    int numSentUDP;
-    int numReceivedUDP;
+    int nbPacketsReceivedUDP;
+    int nbPacketsSentUDP;
 
-    int numSentUSB;
-    int numReceivedUSB;
+    int nbPacketsReceivedUSB;
+    int nbPacketsSentUSB;
 
     // usb connection
     int USBLayerIn;
@@ -56,10 +56,9 @@ class INET_API UDPBridgeEG : public cSimpleModule
     static simsignal_t sentPkSignal;
     static simsignal_t rcvdPkSignal;
 
-    // chooses random destination address
-    virtual IPvXAddress chooseDestAddr();
-    virtual void sendPacket(cMessage *msg);
-    virtual void processPacket(cMessage *msg);
+
+    virtual void processUSBPacket(cMessage *msg);
+    virtual void processUDPPacket(cMessage *msg);
 
     virtual void sendUSB(cPacket *);
 
